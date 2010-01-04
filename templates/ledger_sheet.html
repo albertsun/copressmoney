@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block title %}ledger_sheet{% endblock %}
+
+{% block content %}
+<table>
+{% for line in line_list %}
+    <tr>
+      <td>{{ line.date }}</td><td><strong>{{ line.title }}</strong></td><td>{{ line.description }}</td><td>{{ line.client }}</tr>
+    </tr>
+{% endfor %}
+</table>
+{% endblock %}
