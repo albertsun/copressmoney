@@ -5,7 +5,7 @@
 {% block content %}
 <ul>
 {% for client in client_list %}
-    <li><strong>{{ client.name }}</strong><br />{{ client.mail }}</li>
+    <li><a href="/ledger/client/{{ client.id }}/"><strong>{{ client.name }}</strong></a><br />{{ client.mail }}</li>
 {% endfor %}
 </ul>
 {% endblock %}

@@ -12,7 +12,7 @@ MANAGERS = ADMINS
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': '/Users/albert/stuff/CoPress/copressmoney/copressmoney/copressmoney_sqlite3',                      # Or path to database file if using sqlite3.
+        'NAME': '/Users/albert/stuff/CoPress/copressmoney/copressmoney/db.sqlite',                      # Or path to database file if using sqlite3.
         'USER': '',                      # Not used with sqlite3.
         'PASSWORD': '',                  # Not used with sqlite3.
         'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
@@ -72,7 +72,7 @@ MIDDLEWARE_CLASSES = (
 ROOT_URLCONF = 'copressmoney.urls'
 
 TEMPLATE_DIRS = (
-    '/Users/albert/stuff/CoPress/copressmoney/templates',
+    '/Users/albert/stuff/CoPress/copressmoney/copressmoney/templates',
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
