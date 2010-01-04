@@ -9,6 +9,9 @@ class Client(models.Model):
     site = models.URLField(verify_exists=False)
     description = models.TextField()
 
+    def __unicode__(self):
+        return "A Client named "+self.name+""
+
 class LedgerLine(models.Model):
     """A single line of a double entry ledger, tracking the balances of seven accounts."""
 
@@ -20,11 +23,17 @@ class LedgerLine(models.Model):
     documentation = models.URLField(verify_exists=False)
     category = models.CharField(max_length=64)
     
-    #ledger balance changes
-    revenue = models.DecimalField(max_digits=14, decimal_places=5)
-    expenses = models.DecimalField(max_digits=14, decimal_places=5)
-    cash = models.DecimalField(max_digits=14, decimal_places=5)
-    unearned = models.DecimalField(max_digits=14, decimal_places=5)
-    prepaid = models.DecimalField(max_digits=14, decimal_places=5)
-    acctsreceivable = models.DecimalField(max_digits=14, decimal_places=5)
-    acctspayable = models.DecimalField(max_digits=14, decimal_places=5)
+    #ledger balance changes. stored as decimal. Python objects treat them as strings.
+    revenue = models.DecimalField(null=True, max_digits=14, decimal_places=5)
+    expenses = models.DecimalField(null=True, max_digits=14, decimal_places=5)
+    cash = models.DecimalField(null=True, max_digits=14, decimal_places=5)
+    unearned = models.DecimalField(null=True, max_digits=14, decimal_places=5)
+    prepaid = models.DecimalField(null=True, max_digits=14, decimal_places=5)
+    acctsreceivable = models.DecimalField(null=True, max_digits=14, decimal_places=5)
+    acctspayable = models.DecimalField(null=True, max_digits=14, decimal_places=5)
+
+    def __unicode__(self):
+        return "A ledger line from "+str(self.date)+""
+
+    class Meta:
+        ordering = ['id']
