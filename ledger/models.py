@@ -10,7 +10,8 @@ class Client(models.Model):
     description = models.TextField()
 
     def __unicode__(self):
-        return "A Client named "+self.name+""
+        #return "<a href=\"/ledger/client/"+str(self.id)+"/\">"+self.name+"</a>"
+        return self.name
 
 class LedgerLine(models.Model):
     """A single line of a double entry ledger, tracking the balances of seven accounts."""
@@ -32,8 +33,13 @@ class LedgerLine(models.Model):
     acctsreceivable = models.DecimalField(null=True, max_digits=14, decimal_places=5)
     acctspayable = models.DecimalField(null=True, max_digits=14, decimal_places=5)
 
+    #future additions
+    #paid or unpaid (boolean)
+    #related lines (many-to-many)
+    
+
     def __unicode__(self):
-        return "A ledger line from "+str(self.date)+""
+        return "A ledger entry from "+str(self.date)+""
 
     class Meta:
-        ordering = ['id']
+        ordering = ['-id']

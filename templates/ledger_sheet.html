@@ -3,11 +3,55 @@
 {% block title %}ledger_sheet{% endblock %}
 
 {% block content %}
-<table>
+<table id="ledger" border="0" cellpadding="5" cellspacing="0" >
+<thead>
+<tr id="sorters">
+<th class="date">Date</th>
+<th class="title">Title</th>
+<th class="client">Client</th>
+<th class="description">Description</th>
+<th class="documentation">Receipt / Invoice</th>
+<th class="category">Category</th>
+<th class="revenue">Revenue</th>
+<th class="expenses">Expenses</th>
+<th class="cash">Cash</th>
+<th class="unearned">Unearned Revenue</th>
+<th class="prepaid">Prepaid Expenses</th>
+<th class="acctsreceivable">A / R</th>
+<th class="acctspayable">A / P</th>
+<th class="lineid">Line ID</th>
+</tr>
+<tr id="summary">
+<th id="summary-head" colspan="6">Summary</th>
+<th class="revenue dollars">{% if summary.revenue %}${{ summary.revenue }}{% endif %}</th>
+<th class="expenses dollars">{% if summary.expenses %}${{ summary.expenses }}{% endif %}</th>
+<th class="cash dollars">{% if summary.cash %}${% if summary.cash < 0 %}({{ summary.cash|force_escape|slice:"1:" }}){% else %}{{ summary.cash }}{% endif %}{% endif %}</th>
+<th class="unearned dollars">{% if summary.unearned %}${% if summary.unearned < 0 %}({{ summary.unearned|force_escape|slice:"1:" }}){% else %}{{ summary.unearned }}{% endif %}{% endif %}</th>
+<th class="prepaid dollars">{% if summary.prepaid %}${% if summary.prepaid < 0 %}({{ summary.prepaid|force_escape|slice:"1:" }}){% else %}{{ summary.prepaid }}{% endif %}{% endif %}</th>
+<th class="acctsreceivable dollars">{% if summary.acctsreceivable %}${% if summary.acctsreceivable < 0 %}({{ summary.acctsreceivable|force_escape|slice:"1:" }}){% else %}{{ summary.acctsreceivable }}{% endif %}{% endif %}</th>
+<th class="acctspayable dollars">{% if summary.acctspayable %}${% if summary.acctspayable < 0 %}({{ summary.acctspayable|force_escape|slice:"1:" }}){% else %}{{ summary.acctspayable }}{% endif %}{% endif %}</th>
+<th class="lineid"></th>
+</tr>
+</thead>
+<tbody>
 {% for line in line_list %}
-    <tr>
-      <td>{{ line.date }}</td><td><strong>{{ line.title }}</strong></td><td>{{ line.description }}</td><td>{{ line.client }}</tr>
+    <tr id="line-{{ line.id }}" class="ledgerline">
+      <td class="date">{{ line.date }}</td>
+      <td class="title"><strong>{{ line.title }}</strong></td>
+      <td class="client">{% if line.client %}<a href="/ledger/client/{{ line.client.id }}/">{{ line.client }}</a>{% endif %}</td>
+      <td class="description">{{ line.description }}</td>
+      <td class="documentation">{% if line.documentation %}<a href="{{ line.documentation }}" target="_blank">{% if line.documentation|length > 66 %}{{ line.documentation|slice:":5" }}...{{ line.documentation|slice:"66:" }}{% else %}{{ line.documentation }}{% endif %}</a>{% endif %}</td>
+      <td class="category">{{ line.category }}</td>
+      <td class="revenue dollars">{% if line.revenue %}${{ line.revenue }}{% endif %}</td>
+      <td class="expenses dollars">{% if line.expenses %}${{ line.expenses }}{% endif %}</td>
+      <td class="cash dollars">{% if line.cash %}${% if line.cash < 0 %}({{ line.cash|force_escape|slice:"1:" }}){% else %}{{ line.cash }}{% endif %}{% endif %}</td>
+      <td class="unearned dollars">{% if line.unearned %}${% if line.unearned < 0 %}({{ line.unearned|force_escape|slice:"1:" }}){% else %}{{ line.unearned }}{% endif %}{% endif %}</td>
+      <td class="prepaid dollars">{% if line.prepaid %}${% if line.prepaid < 0 %}({{ line.prepaid|force_escape|slice:"1:" }}){% else %}{{ line.prepaid }}{% endif %}{% endif %}</td>
+      <td class="acctsreceivable dollars">{% if line.acctsreceivable %}${% if line.acctsreceivable < 0 %}({{ line.acctsreceivable|force_escape|slice:"1:" }}){% else %}{{ line.acctsreceivable }}{% endif %}{% endif %}</td>
+      <td class="acctspayable dollars">{% if line.acctspayable %}${% if line.acctspayable < 0 %}({{ line.acctspayable|force_escape|slice:"1:" }}){% else %}{{ line.acctspayable }}{% endif %}{% endif %}</td>
+      <td class="lineid">{{ line.id }}</td>
     </tr>
 {% endfor %}
+</tbody>
 </table>
 {% endblock %}
