@@ -1,6 +1,6 @@
 from django.views.generic import list_detail
-from django.shortcuts import get_object_or_404
-from django.http import Http404
+from django.shortcuts import get_object_or_404, render_to_response
+from django.http import Http404, HttpResponse
 
 import datetime
 
@@ -75,11 +75,19 @@ def ledger_quarter(request, year, quarter):
 def add_line(request):
     """Handles a JavaScript request by returning the HTML of a form as a response."""
     if request.method == 'GET':
-        #return HttpResponse with form
-        pass
+        form = LineForm()
+        """
+        The non-shortcut way:
+        t = get_template('js_addline.html')
+        html = t.render(Context({'form': form}))
+        return HttpResponse(html)
+        """
+        return render_to_response('js_addline.html', {'form': form})
     elif request.method == 'POST':
-        #submit data to database, return JSON object for one line of table
-        pass
+        form = LineForm(request.POST)
+        a = form.save()
+        #TODO, format a as JSON
+        return HttpResponse(str(a))
 
 
 """Helper Functions"""

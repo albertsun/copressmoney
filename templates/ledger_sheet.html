@@ -7,23 +7,6 @@
 <a href="#" onclick="Sheet.addLine();" class="navlink" id="addlink">add line</a> ||| <a href="#" class="navlink">prev</a> | <a href="#" class="navlink">next</a>
 </div>
 
-<tr><th><label for="id_date">Date:</label></th><td><input type="text" name="date" id="id_date" /></td></tr>
-<tr><th><label for="id_client">Client:</label></th><td><select name="client" id="id_client">
-<option value="" selected="selected">---------</option>
-<option value="1">albert</option>
-<option value="2">Daniel</option>
-</select></td></tr>
-<tr><th><label for="id_title">Title:</label></th><td><input id="id_title" type="text" name="title" maxlength="128" /></td></tr>
-<tr><th><label for="id_description">Description:</label></th><td><textarea id="id_description" rows="10" cols="40" name="description"></textarea></td></tr>
-<tr><th><label for="id_documentation">Documentation:</label></th><td><input id="id_documentation" type="text" name="documentation" maxlength="200" /></td></tr>
-<tr><th><label for="id_category">Category:</label></th><td><input id="id_category" type="text" name="category" maxlength="64" /></td></tr>
-<tr><th><label for="id_revenue">Revenue:</label></th><td><input type="text" name="revenue" id="id_revenue" /></td></tr>
-<tr><th><label for="id_expenses">Expenses:</label></th><td><input type="text" name="expenses" id="id_expenses" /></td></tr>
-<tr><th><label for="id_cash">Cash:</label></th><td><input type="text" name="cash" id="id_cash" /></td></tr>
-<tr><th><label for="id_unearned">Unearned:</label></th><td><input type="text" name="unearned" id="id_unearned" /></td></tr>
-<tr><th><label for="id_prepaid">Prepaid:</label></th><td><input type="text" name="prepaid" id="id_prepaid" /></td></tr>
-<tr><th><label for="id_acctsreceivable">Acctsreceivable:</label></th><td><input type="text" name="acctsreceivable" id="id_acctsreceivable" /></td></tr>
-<tr><th><label for="id_acctspayable">Acctspayable:</label></th><td><input type="text" name="acctspayable" id="id_acctspayable" /></td></tr>
 
 
 <table id="ledger" border="0" cellpadding="5" cellspacing="0" >
@@ -57,6 +40,9 @@
 </tr>
 </thead>
 <tbody>
+
+<!--insert addline form here-->
+
 {% for line in line_list %}
     <tr id="line-{{ line.id }}" class="ledgerline">
       <td class="date">{{ line.date }}</td>
