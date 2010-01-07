@@ -35,7 +35,7 @@ def ledger_year(request, year):
 def ledger_month(request, year, month):
     """Returns a filtered set with only entries from year"""
     month=int(month)
-    if month<=1 or month>=12:
+    if month<1 or month>12:
         raise Http404
     
     queryset = LedgerLine.objects.filter(date__year=year, date__month=month).order_by('date')
@@ -70,6 +70,16 @@ def ledger_quarter(request, year, quarter):
         template_object_name = 'line',
         extra_context = {'summary': sumAccounts(queryset)},
     )
+
+
+def add_line(request):
+    """Handles a JavaScript request by returning the HTML of a form as a response."""
+    if request.method == 'GET':
+        #return HttpResponse with form
+        pass
+    elif request.method == 'POST':
+        #submit data to database, return JSON object for one line of table
+        pass
 
 
 """Helper Functions"""

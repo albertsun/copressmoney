@@ -31,6 +31,11 @@ urlpatterns = patterns('',
     (r'^ledger/year/(\d\d\d\d)/quarter/(\d)/$', ledger_quarter),
     (r'^ledger/year/(\d\d\d\d)/month/(\d\d?)/$', ledger_month),
 
+    (r'^api/add/line/$', add_line), #unimplemented. add a single line. expects a POST request from JS
+
+
+    (r'^display_meta/$', display_meta),
+
     #(r'^ledger/import/$', importHack),
 
     # Example:

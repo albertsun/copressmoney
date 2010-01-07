@@ -1,4 +1,5 @@
 from django.db import models
+from django.forms import ModelForm
 
 # Fundamental model is for a single line of the ledger. Additional model defines a basic client. Optional foreign key associates ledger line to client.
 
@@ -18,20 +19,20 @@ class LedgerLine(models.Model):
 
     #identifiers
     date = models.DateField()
-    client = models.ForeignKey(Client, null=True)
+    client = models.ForeignKey(Client, null=True, blank=True)
     title = models.CharField(max_length=128)
-    description = models.TextField()
-    documentation = models.URLField(verify_exists=False)
+    description = models.TextField(blank=True)
+    documentation = models.URLField(verify_exists=False, blank=True)
     category = models.CharField(max_length=64)
     
     #ledger balance changes. stored as decimal. Python objects treat them as strings.
-    revenue = models.DecimalField(null=True, max_digits=14, decimal_places=5)
-    expenses = models.DecimalField(null=True, max_digits=14, decimal_places=5)
-    cash = models.DecimalField(null=True, max_digits=14, decimal_places=5)
-    unearned = models.DecimalField(null=True, max_digits=14, decimal_places=5)
-    prepaid = models.DecimalField(null=True, max_digits=14, decimal_places=5)
-    acctsreceivable = models.DecimalField(null=True, max_digits=14, decimal_places=5)
-    acctspayable = models.DecimalField(null=True, max_digits=14, decimal_places=5)
+    revenue = models.DecimalField(null=True, max_digits=14, decimal_places=5, blank=True)
+    expenses = models.DecimalField(null=True, max_digits=14, decimal_places=5, blank=True)
+    cash = models.DecimalField(null=True, max_digits=14, decimal_places=5, blank=True)
+    unearned = models.DecimalField(null=True, max_digits=14, decimal_places=5, blank=True, verbose_name="Unearned Revenue")
+    prepaid = models.DecimalField(null=True, max_digits=14, decimal_places=5, blank=True, verbose_name="Prepaid Expenses")
+    acctsreceivable = models.DecimalField(null=True, max_digits=14, decimal_places=5, blank=True, verbose_name="A/R")
+    acctspayable = models.DecimalField(null=True, max_digits=14, decimal_places=5, blank=True, verbose_name="A/P")
 
     #future additions
     #paid or unpaid (boolean)
@@ -43,3 +44,9 @@ class LedgerLine(models.Model):
 
     class Meta:
         ordering = ['-id']
+
+class LineForm(ModelForm):
+    """Form class for the LedgerLine model."""
+    class Meta:
+        model = LedgerLine
+
