@@ -89,6 +89,13 @@ def ledger_constraint_failed(request):
     for line in queryset:
         if line.checkAcctConstraint() != True:
             bad.append(line)
+    
+    #hack so its possible to pass a list to the list_detail.object_list generic view instead of a QuerySet
+    class ListQS(list):
+        def _clone(self):
+            return self[:]
+    bad = ListQS(bad)
+
     return list_detail.object_list(
         request,
         queryset = bad,
@@ -146,6 +153,17 @@ def edit_line(request, line_id):
         return render_to_response('ledger_line.html', {'line': line})
     else:
         raise Http404
+
+def delete_line(request, line_id):
+    """Handles a GET request to delete a line.
+    URL at /api/delete/line/(line_id)/
+    GET: delete's line_id, returns success message
+    """
+    line_id = int(line_id)
+    l = LedgerLine.objects.get(pk=line_id)
+    if request.method == 'GET':
+        l.delete()
+        return HttpResponse('Successfully deleted line %d' % line_id)
 
 
 """Helper Functions"""

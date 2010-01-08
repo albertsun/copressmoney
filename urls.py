@@ -29,6 +29,7 @@ urlpatterns = patterns('',
 
     (r'^api/add/line/$', add_line),
     (r'^api/edit/line/(\d+)/$', edit_line),
+    (r'^api/delete/line/(\d+)/$', delete_line),
 
     (r'^display_meta/$', display_meta),
 
