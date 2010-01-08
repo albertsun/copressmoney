@@ -1,0 +1,119 @@
+table {
+	border: 1px solid #ccc;
+	border-collapse:collapse;
+	width:120%;
+	table-layout:fixed;
+	font-size:14px;
+	font-family:"Helvetica Neue", Arial, Helvetica, sans-serif;
+}
+
+thead {
+	background-color: #247E91;
+	text-align:left;
+}
+thead #sorters {
+	cursor:pointer;
+}
+th, td {
+	border: 1px solid #ccc;
+	//border-top:none;
+	//border-bottom:none;
+	padding-left:3px;
+}
+
+#summary {
+	background-color: #fff;
+}
+#summary #summary-head {
+	text-align:right;
+	padding-right: 10px;
+	font-style:oblique;
+}
+
+.date {
+	width:5%;
+}
+.title {
+	width:17%;
+}
+.client {
+	width:3%;
+}
+tbody .client {
+	white-space:nowrap;
+	overflow:hidden;
+}
+.description {
+	width:15%;
+}
+.documentation {
+	width:5%;	
+}
+tbody .documentation {
+	white-space:nowrap;
+	overflow:hidden;
+}
+.category {
+	width:9%;
+}
+
+.dollars {
+	text-align:right;
+}
+
+tbody .revenue, #summary .revenue {
+	background-color: #D6FFCD;
+}
+
+tbody .expenses, #summary .expenses {
+	background-color: #FFCCD5;
+}
+
+tbody .cash, #summary .cash {
+	background-color: #D6FFCD;
+}
+
+tbody .acctsreceivable, #summary .acctsreceivable {
+	background-color: #FFF6CC;
+}
+
+
+/* Form styling */
+.formheading {
+	background-color:#ccc;
+}
+.formbottom{
+	border-bottom:5px solid #ccc;
+}
+.closelink {
+	margin-left:20px;
+}
+.lineform input, .lineform textarea, .lineform select {
+	width:95%;
+}
+.lineform .numeric input {
+	margin-left:3px;
+	width:75%;
+}
+#lineSubmitButton {
+	width:200px;
+}
+#navbar {
+	margin:10px;
+}
+.navlink {
+	color:#0000ff;
+	text-decoration: underline;
+	cursor: pointer;
+}
+.lineid-editactive {
+	background-color:#CCEFFF;
+	cursor:pointer;
+}
+.editlink {
+	color:#0000ff;
+	text-decoration:underline;
+	margin:0px 0px 0px 2px;
+	padding:1px;
+	visibility:hidden;
+}
