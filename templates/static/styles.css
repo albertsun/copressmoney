@@ -21,10 +21,10 @@ th, td {
 	padding-left:3px;
 }
 
-#summary {
+.summary {
 	background-color: #fff;
 }
-#summary #summary-head {
+.summary .summary-head {
 	text-align:right;
 	padding-right: 10px;
 	font-style:oblique;
@@ -61,19 +61,19 @@ tbody .documentation {
 	text-align:right;
 }
 
-tbody .revenue, #summary .revenue {
+tbody .revenue, .summary .revenue {
 	background-color: #D6FFCD;
 }
 
-tbody .expenses, #summary .expenses {
+tbody .expenses, .summary .expenses {
 	background-color: #FFCCD5;
 }
 
-tbody .cash, #summary .cash {
+tbody .cash, .summary .cash {
 	background-color: #D6FFCD;
 }
 
-tbody .acctsreceivable, #summary .acctsreceivable {
+tbody .acctsreceivable, .summary .acctsreceivable {
 	background-color: #FFF6CC;
 }
 
@@ -106,11 +106,11 @@ tbody .acctsreceivable, #summary .acctsreceivable {
 	text-decoration: underline;
 	cursor: pointer;
 }
-.lineid:hover {
+tbody .lineid:hover {
 	background-color:#CCEFFF;
 	cursor:pointer;
 }
-.lineid:hover .editlink {
+tbody .lineid:hover .editlink {
 	visibility:visible;
 }
 .editlink {

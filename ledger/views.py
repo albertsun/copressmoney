@@ -1,6 +1,7 @@
 from django.views.generic import list_detail
 from django.shortcuts import get_object_or_404, render_to_response
 from django.http import Http404, HttpResponse, HttpResponseBadRequest
+from django.db.models import Sum
 
 import datetime
 
@@ -12,12 +13,23 @@ from ledger.models import *
 def ledger_all(request):
     """Returns a ledger with all entries"""
     queryset = LedgerLine.objects.all()
+    #queryset.aggregate(Sum('revenue')) example aggregation....
     return list_detail.object_list(
         request,
         queryset = queryset,
         template_name = 'ledger_sheet.html',
         template_object_name = 'line',
-        extra_context = {'summary': sumAccounts(queryset)},
+    )
+
+def ledger_current(request):
+    """Returns a ledger with all entries"""
+    queryset = LedgerLine.objects.filter(date__lte=datetime.datetime.now()).order_by('-date')
+    #queryset.aggregate(Sum('revenue')) example aggregation....
+    return list_detail.object_list(
+        request,
+        queryset = queryset,
+        template_name = 'ledger_sheet.html',
+        template_object_name = 'line',
     )
 
 def ledger_client(request, client_id):
@@ -29,33 +41,34 @@ def ledger_client(request, client_id):
         queryset = queryset,
         template_name = 'ledger_sheet.html',
         template_object_name = 'line',
-        extra_context = {'summary': sumAccounts(queryset)},
     )
 
 def ledger_year(request, year):
     """Returns a filtered set with only entries from year"""
-    queryset = LedgerLine.objects.filter(date__year=year).order_by('date')
+    year = int(year)
+    queryset = LedgerLine.objects.filter(date__year=year).order_by('-date')
     return list_detail.object_list(
         request,
         queryset = queryset,
         template_name = 'ledger_sheet.html',
         template_object_name = 'line',
-        extra_context = {'summary': sumAccounts(queryset)},
+        extra_context = {'priorbalance': sumAccounts(LedgerLine.objects.filter(date__lt=datetime.date(year, 1, 1)))},
     )
 
 def ledger_month(request, year, month):
     """Returns a filtered set with only entries from year"""
-    month=int(month)
+    year = int(year)
+    month = int(month)
     if month<1 or month>12:
         raise Http404
     
-    queryset = LedgerLine.objects.filter(date__year=year, date__month=month).order_by('date')
+    queryset = LedgerLine.objects.filter(date__year=year, date__month=month).order_by('-date')
     return list_detail.object_list(
         request,
         queryset = queryset,
         template_name = 'ledger_sheet.html',
         template_object_name = 'line',
-        extra_context = {'summary': sumAccounts(queryset)},
+        extra_context = {'priorbalance': sumAccounts(LedgerLine.objects.filter(date__lt=datetime.date(year, month, 1)))},
     )
 
 def ledger_quarter(request, year, quarter):
@@ -64,22 +77,26 @@ def ledger_quarter(request, year, quarter):
     year = int(year)
     if quarter == 1:
         start_date, end_date = datetime.date(year, 1, 1), datetime.date(year, 3, 31)
+        month = 1
     elif quarter == 2:
         start_date, end_date = datetime.date(year, 4, 1), datetime.date(year, 6, 30)
+        month = 4
     elif quarter == 3:
         start_date, end_date = datetime.date(year, 7, 1), datetime.date(year, 9, 30)
+        month = 7
     elif quarter == 4:
         start_date, end_date = datetime.date(year, 10, 1), datetime.date(year, 12, 31)
+        month = 10
     else:
         raise Http404
     
-    queryset =  LedgerLine.objects.filter(date__range=(start_date, end_date)).order_by('date')
+    queryset =  LedgerLine.objects.filter(date__range=(start_date, end_date)).order_by('-date')
     return list_detail.object_list(
         request,
         queryset = queryset,
         template_name = 'ledger_sheet.html',
         template_object_name = 'line',
-        extra_context = {'summary': sumAccounts(queryset)},
+        extra_context = {'priorbalance': sumAccounts(LedgerLine.objects.filter(date__lt=datetime.date(year, month, 1)))},
     )
 
 def ledger_constraint_failed(request):
@@ -101,7 +118,6 @@ def ledger_constraint_failed(request):
         queryset = bad,
         template_name = 'ledger_sheet.html',
         template_object_name = 'line',
-        extra_context = {'summary': sumAccounts(bad)},
     )
 
 
@@ -176,6 +192,16 @@ def delete_line(request, line_id):
 def sumAccounts(queryset):
     """Summarizes the account changes over a time period. Takes a query set as an argument. Returns a dictionary."""
     revenue,expenses,cash,unearned,prepaid,acctsreceivable,acctspayable = 0,0,0,0,0,0,0
+    
+    aggregates = queryset.aggregate(Sum('revenue'), Sum('expenses'), Sum('cash'), Sum('unearned'), Sum('prepaid'), Sum('acctsreceivable'), Sum('acctspayable'))
+    revenue = aggregates['revenue__sum']
+    expenses = aggregates['expenses__sum']
+    cash = aggregates['cash__sum']
+    unearned = aggregates['unearned__sum']
+    prepaid = aggregates['prepaid__sum']
+    acctsreceivable = aggregates['acctsreceivable__sum']
+    acctspayable = aggregates['acctspayable__sum']
+    """
     for l in queryset:
         try:
             revenue+=l.revenue
@@ -205,4 +231,5 @@ def sumAccounts(queryset):
             acctspayable+=l.acctspayable
         except TypeError:
             pass
+    """
     return {'revenue': revenue, 'expenses': expenses, 'cash': cash, 'unearned': unearned, 'prepaid': prepaid, 'acctsreceivable': acctsreceivable, 'acctspayable': acctspayable}

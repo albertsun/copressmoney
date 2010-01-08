@@ -19,6 +19,7 @@ urlpatterns = patterns('',
     (r'^$', home),
     (r'^clients/$', list_detail.object_list, client_list),
     (r'^ledger/all/$', ledger_all),
+    (r'^ledger/current/$', ledger_current),
     (r'^ledger/client/(\d+)/$', ledger_client),
 
     (r'^ledger/year/(\d\d\d\d)/$', ledger_year),

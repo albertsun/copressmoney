@@ -27,15 +27,15 @@
 <th class="acctspayable">A / P</th>
 <th class="lineid">Line ID</th>
 </tr>
-<tr id="summary">
-<th id="summary-head" colspan="6">Summary</th>
-<th class="revenue dollars">{% if summary.revenue %}${{ summary.revenue }}{% endif %}</th>
-<th class="expenses dollars">{% if summary.expenses %}${{ summary.expenses }}{% endif %}</th>
-<th class="cash dollars">{% if summary.cash %}${% if summary.cash < 0 %}({{ summary.cash|force_escape|slice:"1:" }}){% else %}{{ summary.cash }}{% endif %}{% endif %}</th>
-<th class="unearned dollars">{% if summary.unearned %}${% if summary.unearned < 0 %}({{ summary.unearned|force_escape|slice:"1:" }}){% else %}{{ summary.unearned }}{% endif %}{% endif %}</th>
-<th class="prepaid dollars">{% if summary.prepaid %}${% if summary.prepaid < 0 %}({{ summary.prepaid|force_escape|slice:"1:" }}){% else %}{{ summary.prepaid }}{% endif %}{% endif %}</th>
-<th class="acctsreceivable dollars">{% if summary.acctsreceivable %}${% if summary.acctsreceivable < 0 %}({{ summary.acctsreceivable|force_escape|slice:"1:" }}){% else %}{{ summary.acctsreceivable }}{% endif %}{% endif %}</th>
-<th class="acctspayable dollars">{% if summary.acctspayable %}${% if summary.acctspayable < 0 %}({{ summary.acctspayable|force_escape|slice:"1:" }}){% else %}{{ summary.acctspayable }}{% endif %}{% endif %}</th>
+<tr id="prior-summary" class="summary">
+<th id="prior-summary-head" class="summary-head" colspan="6">Prior Balances</th>
+<th class="revenue dollars">{% if priorbalance.revenue != None %}${{ priorbalance.revenue|floatformat:2 }}{% endif %}</th>
+<th class="expenses dollars">{% if priorbalance.expenses != None %}${{ priorbalance.expenses|floatformat:2 }}{% endif %}</th>
+<th class="cash dollars">{% if priorbalance.cash != None %}${% if priorbalance.cash < 0 %}({{ priorbalance.cash|floatformat:2|force_escape|slice:"1:" }}){% else %}{{ priorbalance.cash|floatformat:2 }}{% endif %}{% endif %}</th>
+<th class="unearned dollars">{% if priorbalance.unearned != None %}${% if priorbalance.unearned < 0 %}({{ priorbalance.unearned|floatformat:2|force_escape|slice:"1:" }}){% else %}{{ priorbalance.unearned|floatformat:2 }}{% endif %}{% endif %}</th>
+<th class="prepaid dollars">{% if priorbalance.prepaid != None %}${% if priorbalance.prepaid < 0 %}({{ priorbalance.prepaid|floatformat:2|force_escape|slice:"1:" }}){% else %}{{ priorbalance.prepaid|floatformat:2 }}{% endif %}{% endif %}</th>
+<th class="acctsreceivable dollars">{% if priorbalance.acctsreceivable != None %}${% if priorbalance.acctsreceivable < 0 %}({{ priorbalance.acctsreceivable|floatformat:2|force_escape|slice:"1:" }}){% else %}{{ priorbalance.acctsreceivable|floatformat:2 }}{% endif %}{% endif %}</th>
+<th class="acctspayable dollars">{% if priorbalance.acctspayable != None %}${% if priorbalance.acctspayable < 0 %}({{ priorbalance.acctspayable|floatformat:2|force_escape|slice:"1:" }}){% else %}{{ priorbalance.acctspayable|floatformat:2 }}{% endif %}{% endif %}</th>
 <th class="lineid"></th>
 </tr>
 </thead>

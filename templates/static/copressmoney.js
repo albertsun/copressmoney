@@ -51,6 +51,7 @@ Sheet.addLineClick = function() {
 	      */
 	      $(".addlineform").remove();
 	      $("#addlink").bind("click",Sheet.addLineClick).addClass("navlink");
+	      Sheet.summarize();
 	    });
 	    }); //end submitButton 'click' event handler
     });
@@ -106,6 +107,7 @@ Sheet.editLine = function(trline) {
 	      trline.replaceWith(data);
 	      Sheet.makeEditHoverable($("#line-"+id+" .lineid"));
 	      $(".editlineform-"+id).find(".closelink").triggerHandler("click");
+	      Sheet.summarize();
 	    });
 	}); //end submitButton 'click' event handler
       
@@ -132,24 +134,75 @@ Sheet.makeEditHoverable = function(jqobject) {
     });
 }
 
+
+/*
+  Summarizes the currently displayed ledger's values and writes them into a header row.
+  Takes the <tr> row in which to write the values as an argument.
+*/
+Sheet.summarize = function(summaryrow) {
+  if (!summaryrow) {
+    console.log("no provided summaryrow");
+    var summaryrow = $("#live-summary");
+  }
+  var sumcol = function(class) {
+    /*Takes a String that's a class name of a table column and sums its values*/
+    var tot = new Number(0.0);
+    $("tbody td.dollars."+class).each(function(i,node) {
+      tot += new Number(Sheet.parseAccounting($(node).text()));
+    });
+    return tot;
+  }
+  /*do above for each of the accounts*/
+  summaryrow.find(".revenue").text(Sheet.toAccounting(sumcol("revenue")));
+  summaryrow.find(".expenses").text(Sheet.toAccounting(sumcol("expenses")));
+  summaryrow.find(".cash").text(Sheet.toAccounting(sumcol("cash")));
+  summaryrow.find(".unearned").text(Sheet.toAccounting(sumcol("unearned")));
+  summaryrow.find(".prepaid").text(Sheet.toAccounting(sumcol("prepaid")));
+  summaryrow.find(".acctsreceivable").text(Sheet.toAccounting(sumcol("acctsreceivable")));
+  summaryrow.find(".acctspayable").text(Sheet.toAccounting(sumcol("acctspayable")));
+  
+  //$("tr#prior-summary").after(summaryrow);
+  //OR
+  //.replaceWith(summaryrow);
+
+  console.log(summaryrow);
+}
+
+/*Formats a Number as a string in accounting notation*/
+Sheet.toAccounting = function(n) {
+  if (n<0) {
+    return "$"+n.toFixed(2).toString().replace(/-/g,'(')+")";
+  } else {
+    return "$"+n.toFixed(2).toString();
+  }
+}
+/*Parses a String in accounting notation and returns a Number*/
+Sheet.parseAccounting = function(s) {
+  return new Number(s.replace(/\$|\)/g,'').replace(/\(/,'-'));
+}
+
 $(document).ready(function() {
     /*
       Makes table sortable on each column header
       http://tablesorter.com/docs/
      */
-    $("#ledger").tablesorter({ headers: { 6: {sorter:'currency'}, 7: {sorter:'currency'}, 8: {sorter:'currency'}, 9: {sorter:'currency'}, 10: {sorter:'currency'}, 11: {sorter:'currency'}, 12: {sorter:'currency'}, 13: {sorter:'digit'} }, 'debug':true });
+    $("#ledger").tablesorter({ headers: { 3: {sorter:'text'}, 6: {sorter:'currency'}, 7: {sorter:'currency'}, 8: {sorter:'currency'}, 9: {sorter:'currency'}, 10: {sorter:'currency'}, 11: {sorter:'currency'}, 12: {sorter:'currency'}, 13: {sorter:'digit'} }, 'cancelSelection':false, 'debug':true });
+    $("#ledger #summary th").unbind("click");
 
     /*
       Adds link to add new lines
     */
     $("#addlink").bind("click", Sheet.addLineClick);
 
-
     /*
       Adds links to each line to edit it.
       On mouse over each lineid table cell, the table cell is activated with an event binding so that when clicked, a GET request is made to the server for the form to edit that particular line of the ledger.
     */
     Sheet.makeEditHoverable($("tbody .lineid"));
+    
+    /*Create a new row, changes IDs and puts a javscript sum of each column in it*/
+    
+    Sheet.summarize($("tr#prior-summary").clone().attr('id','live-summary').find("th:first").attr('id','live-summary-head').text("Summary of Changes").parent().insertAfter("tr#prior-summary"));
 
   });
 
