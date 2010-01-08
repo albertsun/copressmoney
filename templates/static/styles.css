@@ -106,9 +106,12 @@ tbody .acctsreceivable, #summary .acctsreceivable {
 	text-decoration: underline;
 	cursor: pointer;
 }
-.lineid-editactive {
+.lineid:hover {
 	background-color:#CCEFFF;
 	cursor:pointer;
+}
+.lineid:hover .editlink {
+	visibility:visible;
 }
 .editlink {
 	color:#0000ff;
@@ -116,4 +119,7 @@ tbody .acctsreceivable, #summary .acctsreceivable {
 	margin:0px 0px 0px 2px;
 	padding:1px;
 	visibility:hidden;
+}
+.deletelink {
+	margin-left:20px;
 }

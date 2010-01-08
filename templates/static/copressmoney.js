@@ -69,46 +69,57 @@ Sheet.bindCloseLink = function(formclass, callback) {
   handles edit links in each lineid box
  */
 Sheet.showEditLink = function(thislink) {
-  $(thislink).find(".editlink").css("visibility","visible");
-  $(thislink).addClass("lineid-editactive");
+  //smacks head. these can be done in CSS
+  //$(thislink).find(".editlink").css("visibility","visible");
+  //$(thislink).addClass("lineid-editactive");
   $(thislink).one("click", function() {
       /*onclick, activate the whole line for editing*/
-      Sheet.editLine($(thislink).parent(), thislink);
+      Sheet.editLine($(thislink).parent());
     });
 }
 Sheet.hideEditLink = function(thislink) {
-  $(thislink).find(".editlink").css("visibility","hidden");
-  $(thislink).removeClass("lineid-editactive");
+  //$(thislink).find(".editlink").css("visibility","hidden");
+  //$(thislink).removeClass("lineid-editactive");
   $(thislink).unbind("click");
 }
-Sheet.editLine = function(trline, thislink) {
-  //trline.css("background-color","red");
+Sheet.editLine = function(trline) {
+  /*Queries server for form data to make a line of the ledger editable.
+
+    trline is the jQuery object of the whole <tr>
+  */
   var id_s = trline.attr("id")
   var id = id_s.substr(id_s.indexOf('-')+1,id_s.length);
-  //Sheet.inEdit = parseInt(id);
+  
   $.get("/api/edit/line/"+id+"/", function(data) {
-      $(data).insertBefore("#"+id_s);
-
+      $(data).insertAfter("#"+id_s);
+      
       Sheet.bindCloseLink("editlineform-"+String(id), function() {
 	  $("#line-"+String(id)).fadeIn();
         });
 
       $("#editSubmitButton-"+id).bind("click", function() {
 	  Sheet.POSTLine("/api/edit/line/"+id+"/", id, function(data) {
+	      /*On completion of the POST, replaces the previous <tr> with a new <tr> returned from the server.
+		Then binds an event handler onto the edit link for that new <tr>
+		Then activates the event handler on the 'close' button to close the edit form
+	      */
 	      trline.replaceWith(data);
 	      Sheet.makeEditHoverable($("#line-"+id+" .lineid"));
-	      /*
-		modify trline in place, then
-		replace this with a call to the close link's trigger
-	       $(closelink).triggerHandler("click");
-	      */
 	      $(".editlineform-"+id).find(".closelink").triggerHandler("click");
 	    });
 	}); //end submitButton 'click' event handler
       
       trline.hide();
-      
-    });
+      /*Add a delete button to trline*/
+      var deleteLinkTd = $(".formheading.editlineform-"+id+" td:first").append($("<span><small><em>delete row</em></small></span>").addClass("navlink deletelink"));
+      console.log(deleteLinkTd);
+      $(deleteLinkTd).find(".deletelink").one("click", function() {
+	  $.get("/api/delete/line/"+id+"/", function(data) { 
+	      
+	    },
+	    "json");
+	});
+    }); //end $.get of edit form line
   
   //trline.find(".date");
 }

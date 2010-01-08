@@ -1,6 +1,6 @@
 from django.views.generic import list_detail
 from django.shortcuts import get_object_or_404, render_to_response
-from django.http import Http404, HttpResponse
+from django.http import Http404, HttpResponse, HttpResponseBadRequest
 
 import datetime
 
@@ -126,7 +126,6 @@ def add_line(request):
         return render_to_response('ledger_lineform.html', {'form': form, 'heading': "Add New Line", 'submitButton': {'id': "addlineSubmitButton", 'text': "Add Line"}, 'tr_classes': "addlineform"})
     elif request.method == 'POST':
         form = LineForm(request.POST)
-        #validate the accounting constraints
         line = form.save()
         return render_to_response('ledger_line.html', {'line': line})
     else:
@@ -138,8 +137,11 @@ def edit_line(request, line_id):
     GET: returns HTML of a line to edit
     POST: updates line in database, returns edited line in <tr> tags
     """
-    line_id = int(line_id)
-    l = LedgerLine.objects.get(pk=line_id)
+    try:
+        line_id = int(line_id)
+        l = LedgerLine.objects.get(pk=line_id)
+    except (TypeError, LedgerLine.DoesNotExist):
+        return HttpResponseBadRequest('{ "status": "failed", "message": "Must provide valid line id" }')
     if request.method == 'GET':
         form = LineForm(instance=l)
         head = 'Update Line (%d)' % line_id
@@ -159,11 +161,14 @@ def delete_line(request, line_id):
     URL at /api/delete/line/(line_id)/
     GET: delete's line_id, returns success message
     """
-    line_id = int(line_id)
-    l = LedgerLine.objects.get(pk=line_id)
-    if request.method == 'GET':
+    try:
+        line_id = int(line_id)
+        l = LedgerLine.objects.get(pk=line_id)
+        assert(request.method == 'GET')
         l.delete()
-        return HttpResponse('Successfully deleted line %d' % line_id)
+        return HttpResponse('{ "status": "success", "deleted": %d }' % line_id)
+    except (TypeError, LedgerLine.DoesNotExist, AssertionError):
+        return HttpResponseBadRequest('{ "status": "failed" }')
 
 
 """Helper Functions"""
