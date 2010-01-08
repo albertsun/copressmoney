@@ -1,0 +1,16 @@
+<tr id="line-{{ line.id }}" class="ledgerline">
+      <td class="date">{{ line.date }}</td>
+      <td class="title"><strong>{{ line.title }}</strong></td>
+      <td class="client">{% if line.client %}<a href="/ledger/client/{{ line.client.id }}/">{{ line.client }}</a>{% endif %}</td>
+      <td class="description">{{ line.description }}</td>
+      <td class="documentation">{% if line.documentation %}<a href="{{ line.documentation }}" target="_blank">{% if line.documentation|length > 66 %}{{ line.documentation|slice:":5" }}...{{ line.documentation|slice:"66:" }}{% else %}{{ line.documentation }}{% endif %}</a>{% endif %}</td>
+      <td class="category">{{ line.category }}</td>
+      <td class="revenue dollars">{% if line.revenue %}${{ line.revenue }}{% endif %}</td>
+      <td class="expenses dollars">{% if line.expenses %}${{ line.expenses }}{% endif %}</td>
+      <td class="cash dollars">{% if line.cash %}${% if line.cash < 0 %}({{ line.cash|force_escape|slice:"1:" }}){% else %}{{ line.cash }}{% endif %}{% endif %}</td>
+      <td class="unearned dollars">{% if line.unearned %}${% if line.unearned < 0 %}({{ line.unearned|force_escape|slice:"1:" }}){% else %}{{ line.unearned }}{% endif %}{% endif %}</td>
+      <td class="prepaid dollars">{% if line.prepaid %}${% if line.prepaid < 0 %}({{ line.prepaid|force_escape|slice:"1:" }}){% else %}{{ line.prepaid }}{% endif %}{% endif %}</td>
+      <td class="acctsreceivable dollars">{% if line.acctsreceivable %}${% if line.acctsreceivable < 0 %}({{ line.acctsreceivable|force_escape|slice:"1:" }}){% else %}{{ line.acctsreceivable }}{% endif %}{% endif %}</td>
+      <td class="acctspayable dollars">{% if line.acctspayable %}${% if line.acctspayable < 0 %}({{ line.acctspayable|force_escape|slice:"1:" }}){% else %}{{ line.acctspayable }}{% endif %}{% endif %}</td>
+      <td class="lineid">{{ line.id }}<span class="editlink"><em>edit</em></span></td>
+    </tr>

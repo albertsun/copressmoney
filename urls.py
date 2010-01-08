@@ -14,24 +14,19 @@ client_list = {
     'template_name': 'client_list.html',
     'template_object_name': 'client',
 }
-ledger_all = {
-    'queryset': LedgerLine.objects.all(),
-    'template_name': 'ledger_sheet.html',
-    'template_object_name': 'line',
-    'extra_context': {'summary': sumAccounts(LedgerLine.objects.all())},
-}
 
 urlpatterns = patterns('',
     (r'^$', home),
     (r'^clients/$', list_detail.object_list, client_list),
-    (r'^ledger/all/$', list_detail.object_list, ledger_all),
+    (r'^ledger/all/$', ledger_all),
     (r'^ledger/client/(\d+)/$', ledger_client),
 
     (r'^ledger/year/(\d\d\d\d)/$', ledger_year),
     (r'^ledger/year/(\d\d\d\d)/quarter/(\d)/$', ledger_quarter),
     (r'^ledger/year/(\d\d\d\d)/month/(\d\d?)/$', ledger_month),
 
-    (r'^api/add/line/$', add_line), #unimplemented. add a single line. expects a POST request from JS
+    (r'^api/add/line/$', add_line),
+    (r'^api/edit/line/(\d+)/$', edit_line),
 
 
     (r'^display_meta/$', display_meta),

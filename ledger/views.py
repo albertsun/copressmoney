@@ -9,6 +9,17 @@ from ledger.models import *
 
 """Views"""
 
+def ledger_all(request):
+    """Returns a ledger with all entries"""
+    queryset = LedgerLine.objects.all()
+    return list_detail.object_list(
+        request,
+        queryset = queryset,
+        template_name = 'ledger_sheet.html',
+        template_object_name = 'line',
+        extra_context = {'summary': sumAccounts(queryset)},
+    )
+
 def ledger_client(request, client_id):
     """A view that returns a generic list_detail view of only the ledger entries associated with the client_id"""
     client = get_object_or_404(Client, id=client_id)
@@ -73,21 +84,50 @@ def ledger_quarter(request, year, quarter):
 
 
 def add_line(request):
-    """Handles a JavaScript request by returning the HTML of a form as a response."""
+    """Handles a JavaScript request by returning the HTML of a form as a response.
+    URL at /api/add/line/
+    GET: returns HTML of a line submission form.
+    POST: submits a line to a database and returns the line formatted in a table, within <tr> tags.
+    """
     if request.method == 'GET':
         form = LineForm()
+        form.auto_id = 'id_%s_add' #Makes input id attr's more unique, when multiple forms are present.
         """
         The non-shortcut way:
         t = get_template('js_addline.html')
         html = t.render(Context({'form': form}))
         return HttpResponse(html)
         """
-        return render_to_response('js_addline.html', {'form': form})
+        return render_to_response('ledger_lineform.html', {'form': form, 'heading': "Add New Line", 'submitButton': {'id': "addlineSubmitButton", 'text': "Add Line"}, 'tr_classes': "addlineform"})
     elif request.method == 'POST':
         form = LineForm(request.POST)
-        a = form.save()
-        #TODO, format a as JSON
-        return HttpResponse(str(a))
+        #validate the accounting constraints
+        line = form.save()
+        return render_to_response('ledger_line.html', {'line': line})
+    else:
+        raise Http404
+
+def edit_line(request, line_id):
+    """Handles a JavaScript by returning the HTML of a form prefilled with a line to edit.
+    URL at /api/edit/line/(line_id)/
+    GET: returns HTML of a line to edit
+    POST: updates line in database, returns edited line in <tr> tags
+    """
+    line_id = int(line_id)
+    l = LedgerLine.objects.get(pk=line_id)
+    if request.method == 'GET':
+        form = LineForm(instance=l)
+        head = 'Update Line (%d)' % line_id
+        classes = 'editlineform editlineform-%d' % line_id
+        submitID = "editSubmitButton-%d" % line_id
+        form.auto_id = 'id_%s_'+str(form.initial['id']) #Makes input id attr's more unique, when multiple forms are present.
+        return render_to_response('ledger_lineform.html', {'form': form, 'heading': head, 'submitButton': {'id': submitID, 'text': "Update Line"}, 'tr_classes': classes});
+    elif request.method == 'POST':
+        form = LineForm(request.POST, instance=l)
+        line = form.save()
+        return render_to_response('ledger_line.html', {'line': line})
+    else:
+        raise Http404
 
 
 """Helper Functions"""
