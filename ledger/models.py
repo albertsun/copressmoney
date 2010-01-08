@@ -39,8 +39,39 @@ class LedgerLine(models.Model):
     #paid or unpaid (boolean)
     #related lines (many-to-many)
 
+    def checkAcctConstraint(self):
+        """
+        Checks the line to see if it satisfies the accounting constraint that both sides of the balance sheet must balance.
+        Specifically, checks that.
+        cash+prepaid+acctsreceivable+expenses = unearned+acctspayable+revenue
+        """
+        left, right = {}, {}
+        if self.revenue:
+            right['revenue'] = self.revenue
+        if self.expenses:
+            left['expenses'] = self.expenses
+        if self.cash:
+            left['cash'] = self.cash
+        if self.unearned:
+            right['unearned'] = self.unearned
+        if self.prepaid:
+            left['prepaid'] = self.prepaid
+        if self.acctsreceivable:
+            left['acctsreceivable'] = self.acctsreceivable
+        if self.acctspayable:
+            right['acctspayable'] = self.acctspayable
+        sum = 0
+        for k in left:
+            sum+=left[k]
+        for k in right:
+            sum-=right[k]
+        if sum == 0:
+            return True
+        else:
+            return {'id': self.id, 'title': self.title, 'left': left, 'right': right}
+
     def __unicode__(self):
-        return str(title)+" (Entry date"+str(self.date)+")"
+        return str(self.title)+" (Entry date"+str(self.date)+")"
 
     class Meta:
         ordering = ['-id']

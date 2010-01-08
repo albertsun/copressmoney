@@ -82,7 +82,25 @@ def ledger_quarter(request, year, quarter):
         extra_context = {'summary': sumAccounts(queryset)},
     )
 
+def ledger_constraint_failed(request):
+    """Returns view of all entries which fail to pass the accounting constraint and are likely erronous"""
+    queryset = LedgerLine.objects.all()
+    bad = []
+    for line in queryset:
+        if line.checkAcctConstraint() != True:
+            bad.append(line)
+    return list_detail.object_list(
+        request,
+        queryset = bad,
+        template_name = 'ledger_sheet.html',
+        template_object_name = 'line',
+        extra_context = {'summary': sumAccounts(bad)},
+    )
 
+
+"""
+These need to return validation errors better, and in a javascript compatible format so that they can be shown to the user.
+"""
 def add_line(request):
     """Handles a JavaScript request by returning the HTML of a form as a response.
     URL at /api/add/line/

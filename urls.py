@@ -25,9 +25,10 @@ urlpatterns = patterns('',
     (r'^ledger/year/(\d\d\d\d)/quarter/(\d)/$', ledger_quarter),
     (r'^ledger/year/(\d\d\d\d)/month/(\d\d?)/$', ledger_month),
 
+    (r'^ledger/constraint_failed/$', ledger_constraint_failed),
+
     (r'^api/add/line/$', add_line),
     (r'^api/edit/line/(\d+)/$', edit_line),
-
 
     (r'^display_meta/$', display_meta),
 

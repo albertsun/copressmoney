@@ -126,7 +126,7 @@ $(document).ready(function() {
       Makes table sortable on each column header
       http://tablesorter.com/docs/
      */
-    //$("#ledger").tablesorter({ headers: { 6: {sorter:'currency'}, 7: {sorter:'currency'}, 8: {sorter:'currency'}, 9: {sorter:'currency'}, 10: {sorter:'currency'}, 11: {sorter:'currency'}, 12: {sorter:'currency'}, 13: {sorter:'digit'} }, 'debug':true });
+    $("#ledger").tablesorter({ headers: { 6: {sorter:'currency'}, 7: {sorter:'currency'}, 8: {sorter:'currency'}, 9: {sorter:'currency'}, 10: {sorter:'currency'}, 11: {sorter:'currency'}, 12: {sorter:'currency'}, 13: {sorter:'digit'} }, 'debug':true });
 
     /*
       Adds link to add new lines
