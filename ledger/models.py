@@ -35,7 +35,7 @@ class LedgerLine(models.Model):
     acctsreceivable = models.DecimalField(null=True, max_digits=14, decimal_places=5, blank=True, verbose_name="A/R")
     acctspayable = models.DecimalField(null=True, max_digits=14, decimal_places=5, blank=True, verbose_name="A/P")
 
-    related = models.ManyToManyField('self', null=True, blank=True, symmetrical=False)
+    related = models.ManyToManyField('self', null=True, blank=True)
     #future additions
     
     #paid or unpaid (boolean)

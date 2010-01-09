@@ -191,6 +191,16 @@ def delete_line(request, line_id):
     except (TypeError, LedgerLine.DoesNotExist, AssertionError):
         return HttpResponseBadRequest('{ "status": "failed" }')
 
+def get_line(request, line_id):
+    """Returns a single lne of the ledger.
+    URL at /api/get/line/(line_id)/"""
+    try:
+        line_id = int(line_id)
+        l = LedgerLine.objects.get(pk=line_id)
+        return render_to_response('ledger_line.html', {'line': l})
+    except LedgerLine.DoesNotExist:
+        raise Http404
+
 
 """Helper Functions"""
 

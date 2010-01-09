@@ -10,11 +10,12 @@ Sheet = new Object();
   callback: function(data) { } determining what to do with the returned data and doing cleanup
 */
 Sheet.POSTLine = function(url, suffix, callback) {
-  //console.log($("#id_related_"+suffix).val().split(','));
-  var relatedvalues = $("#id_related_"+suffix).val().split(',');
-  if (relatedvalues == ''.split(',')) {
-    relatedvalues = new Array();
+  
+  var relatedvalues = new Array();
+  if ($("#id_related_"+suffix).val() != '') {
+    relatedvalues = $("#id_related_"+suffix).val().split(',');
   }
+  console.log(relatedvalues);
 
   //construct a post query and submit it to /api/add/line/
   $.post(url, { date: $("#id_date_"+suffix).val(),
@@ -54,6 +55,8 @@ Sheet.addLineClick = function() {
       Sheet.bindCloseLink("addlineform", function() { $("#addlink").bind("click",Sheet.addLineClick).addClass("navlink"); });
 
       $("#addlineSubmitButton").bind("click", function() {
+	  $("#donelink").trigger('click');
+
 	  Sheet.POSTLine("/api/add/line/", "add", function(data) {
 	      /*callback upon completion of POST adds new line to ledger and removes submission form*/
 	      $(data).prependTo("#ledger tbody");
@@ -88,8 +91,10 @@ Sheet.editLine = function(trline) {
       Sheet.bindCloseLink("editlineform-"+String(id), function() {
 	  $("#line-"+String(id)).fadeIn();
         });
-
+      
       $("#editSubmitButton-"+id).bind("click", function() {
+	  $("#donelink").trigger('click');
+
 	  Sheet.POSTLine("/api/edit/line/"+id+"/", id, function(data) {
 	      /*On completion of the POST, replaces the previous <tr> with a new <tr> returned from the server.
 		Then binds an event handler onto the edit link for that new <tr>
@@ -103,19 +108,24 @@ Sheet.editLine = function(trline) {
 	}); //end submitButton 'click' event handler
       
       trline.hide();
-      /*Add a delete button to trline*/
+      /*Add a delete button to the editingline*/
       var deleteLinkTd = $(".formheading.editlineform-"+id+" td:first").append($("<span><small><em>delete row</em></small></span>").addClass("navlink deletelink"));
       //console.log(deleteLinkTd);
       $(deleteLinkTd).find(".deletelink").one("click", function() {
 	  $.get("/api/delete/line/"+id+"/", function(data) { 
 	      //TODO. close edit form.
+	      $(".formheading.editlineform-"+id+" .closelink").trigger('click');
 	    },
 	    "json");
 	});
+
+      //activate the select lines button
+      $("#selectrelatedbutton-"+id+" .selectrelatedlink").bind('click', function() {
+	  Sheet.startSelectLines(id);
+	});
+
     }); //end $.get of edit form line
-  
-  //trline.find(".date");
-}
+} //end Sheet.editLine
 /*
   handles edit links in each lineid box
  */
@@ -208,73 +218,100 @@ Sheet.startSelectLines = function(id) {
   //deactivate edit links
   $("tbody .lineid").unbind();
 
+  var suffix = "";
+
   if (!id) {
     //no id passed, so we're working with .addlineform .selectrelatedbutton
     console.log("no id provided. selecting lines for adding a new line");    
     $(".closelink:not(.addlineform .closelink)").trigger('click');
-    
-    $("#selectrelatedbutton-add").css('background-color','#CCEFFF');
-    $("#selectrelatedbutton-add div").css('display','block');
-    $("#selectrelatedbutton-add .selectrelatedlink").css('display','none'); //inline is default
-
-    /*Setup the lines of the ledger to be selected.
-      When one is selected it gains a hidden checked checkbox <input> with its ID as the value.
-    */
-    $(".ledgerline").css({'cursor':'pointer','-webkit-user-select':'none','-moz-user-select':'none'}).hover(mouseOverLine, mouseOutLine).toggle(function() {
-	  var id_s = $(this).attr("id");
-	  var id = id_s.substr(id_s.indexOf('-')+1,id_s.length);
-
-	  console.log("select "+id_s);
-	  
-  	  //first time a line is clicked. selects it.
-	  $(this).css('background-color','#FF8952');
-	  $(this).unbind('mouseover').unbind('mouseout');
-	  
-	  //TODO store selected lines
-	  
-	  $('<input type="checkbox" name="lineselected" value="'+id+'" checked="checked" />').css('display','none').appendTo($(this).find(".lineid"));
-	},
-	function() {
-	  console.log('deselect '+$(this).attr("id"))
-	  //second time a line is clicked. deselects it.
-	  $(this).hover(mouseOverLine, mouseOutLine);
-	  $(this).css('background-color','#FFFFFF');
-	  
-	  //TODO remove line from selected. deselect it
-	  $(this).find("input:checkbox").remove();
-	  
-	});
-
-    /*Activate the cancel link*/
-    $("#cancellink").bind('click', function() {
-	//restores prior content
-	console.log('canceling selection');
-	
-	$("#selectrelatedbutton-add").css('background-color','#FFFFFF');
-	$("#selectrelatedbutton-add .selectrelatedlink").css('display','inline');
-	$("#selectrelatedbutton-add div").css('display','none');
-	
-	Sheet.makeEditHoverable($("tbody .lineid"));
-	$(".ledgerline input:checkbox:checked").parent.parent().trigger('click');
-	$(".ledgerline").css({'cursor':'auto','-webkit-user-select':'text','-moz-user-select':'text','background-color':'#FFFFFF'}).unbind();
-      });
-    /*Activate the done link*/
-    $("#donelink").bind('click', function() {
-	//write the values of the checked boxes to the hidden input, and then trigger #cancellink click
-	var idvalues = $.map($(".ledgerline input:checkbox:checked"), function(el, i) {
-	    //console.log($(el).val());
-	    return $(el).val().toString();
-	  }).join(',');
-	$("#id_related_add").val(idvalues);
-      });
-
+    suffix = "add";
   } else {
     //console.log(id);
     //Collapse other editing dialogs
     console.log(".closelink:not(.editlineform-"+id+" .closelink)")
     $(".closelink:not(.editlineform-"+id+" .closelink)").trigger('click');
+    suffix = id.toString();
   }
-}
+
+  $("#selectrelatedbutton-"+suffix).css('background-color','#CCEFFF');
+  $("#selectrelatedbutton-"+suffix+" div").css('display','block');
+  $("#selectrelatedbutton-"+suffix+" .selectrelatedlink").css('display','none'); //inline is default
+
+  var clickSelect = function() {
+    var id_s = $(this).attr("id");
+    var id = id_s.substr(id_s.indexOf('-')+1,id_s.length);
+
+    console.log("select "+id_s);
+    
+    //first time a line is clicked. selects it.
+    $(this).css('background-color','#FF8952');
+    $(this).unbind('mouseover').unbind('mouseout');
+	  
+    //Adds a hidden checkbox to the line to denote that it's selected	  
+    $('<input type="checkbox" name="lineselected" value="'+id+'" checked="checked" />').css('display','none').appendTo($(this).find(".lineid"));
+    $("#selected-count").text($(".ledgerline input:checkbox:checked").length.toString()+" selected");
+  }
+  var clickDeselect = function() {
+    console.log('deselect '+$(this).attr("id"))
+    //second time a line is clicked. deselects it.
+    $(this).hover(mouseOverLine, mouseOutLine);
+    $(this).css('background-color','#FFFFFF');
+    
+    //remove line from selected. deselect it
+    $(this).find("input:checkbox").remove();
+    $("#selected-count").text($(".ledgerline input:checkbox:checked").length.toString()+" selected");
+  }
+  
+    /*Setup the lines of the ledger to be selected.
+      When one is selected it gains a hidden checked checkbox <input> with its ID as the value.
+    */
+  $(".ledgerline").css({'cursor':'pointer','-webkit-user-select':'none','-moz-user-select':'none'}).hover(mouseOverLine, mouseOutLine).toggle(clickSelect, clickDeselect);
+
+  /*Activate the cancel link*/
+  $("#cancellink").bind('click', function() {
+      //restores prior content
+      console.log('canceling selection');
+      $(".ledgerline input:checkbox:checked").parent().parent().trigger('click');
+	
+      $("#selectrelatedbutton-"+suffix).css('background-color','#FFFFFF');
+      $("#selectrelatedbutton-"+suffix+" .selectrelatedlink").css('display','inline');
+      $("#selectrelatedbutton-"+suffix+" div").css('display','none');
+	
+      Sheet.makeEditHoverable($("tbody .lineid"));
+      $(".ledgerline").css({'cursor':'auto','-webkit-user-select':'text','-moz-user-select':'text','background-color':'#FFFFFF'}).unbind();
+    });
+  /*Activate the done link*/
+  $("#donelink").bind('click', function() {
+      //write the values of the checked boxes to the hidden input, and then trigger #cancellink click
+      var idvalues = $.map($(".ledgerline input:checkbox:checked"), function(el, i) {
+	  return $(el).val().toString();
+	}).join(',');
+      $("#id_related_"+suffix).val(idvalues);
+      console.log('storing selected value '+idvalues);
+      $("#cancellink").triggerHandler('click');
+    });
+
+    /*Read the value of #id_related_(suffix) and sets those lines to start out selected*/
+  if ($("#id_related_"+suffix).val() != '') {
+    $.map($("#id_related_"+suffix).val().split(','), function(idstring, i) {
+	if ($("#line-"+idstring).is(".ledgerline")) {
+	  console.log("#line-"+idstring+" eists");
+	  //the line exists in the ledger already, mark it as selected
+	  $("#line-"+idstring).trigger('click');
+	} else {
+	  //get the line from the server, add it, and handlers to it, and select (click) it
+	  console.log("asking server for #line-"+idstring);
+	  $.get("/api/get/line/"+idstring+"/", function(data) {
+	      var newLine = $(data);
+	      newLine.appendTo("#ledger tbody").hover(mouseOverLine, mouseOutLine).toggle(clickSelect, clickDeselect);
+	      newLine.trigger('click');
+	    });
+	}
+	
+      });
+  }
+
+} //end Sheet.startSelectLines();
 
 
 $(document).ready(function() {
