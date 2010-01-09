@@ -171,6 +171,7 @@ def edit_line(request, line_id):
         return render_to_response('ledger_lineform.html', {'form': form, 'relatedvalues': relatedvalues, 'heading': head, 'submitButton': {'id': submitID, 'text': "Update Line"}, 'tr_classes': classes});
     elif request.method == 'POST':
         form = LineForm(request.POST, instance=l)
+
         line = form.save()
         return render_to_response('ledger_line.html', {'line': line})
     else:

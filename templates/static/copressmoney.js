@@ -10,7 +10,12 @@ Sheet = new Object();
   callback: function(data) { } determining what to do with the returned data and doing cleanup
 */
 Sheet.POSTLine = function(url, suffix, callback) {
-  console.log($("#id_related_"+suffix).val());
+  //console.log($("#id_related_"+suffix).val().split(','));
+  var relatedvalues = $("#id_related_"+suffix).val().split(',');
+  if (relatedvalues == ''.split(',')) {
+    relatedvalues = new Array();
+  }
+
   //construct a post query and submit it to /api/add/line/
   $.post(url, { date: $("#id_date_"+suffix).val(),
 	title: $("#id_title_"+suffix).val(),
@@ -25,7 +30,7 @@ Sheet.POSTLine = function(url, suffix, callback) {
 	prepaid: $("#id_prepaid_"+suffix).val(),
 	acctsreceivable: $("#id_acctsreceivable_"+suffix).val(),
 	acctspayable: $("#id_acctspayable_"+suffix).val(),
-	related: $("#id_related_"+suffix).val(),
+	related: relatedvalues,
 	},
     callback,
     "html");
@@ -103,7 +108,7 @@ Sheet.editLine = function(trline) {
       //console.log(deleteLinkTd);
       $(deleteLinkTd).find(".deletelink").one("click", function() {
 	  $.get("/api/delete/line/"+id+"/", function(data) { 
-	      
+	      //TODO. close edit form.
 	    },
 	    "json");
 	});
@@ -185,14 +190,9 @@ Sheet.parseAccounting = function(s) {
 }
 
 
-/* Code snippet for select lines function
-
-$(".ledgerline:not(#line-476)").css({'cursor':'pointer','-webkit-user-select':'none','-moz-user-select':'none'}).bind('click', function() { console.log($(this).attr('id')) });
-$("#line-253").css('background-color','#FF8952');
-
-$(".ledgerline input:checkbox:checked")
-.attr('checked',true);
-
+/* 
+   Called when the user clicks on the buttons to 'select related lines' either while adding a new line or editing an existing line.
+   Lets the user click on other lines in the ledger to set them as related.
 */
 Sheet.startSelectLines = function(id) {
 
@@ -255,11 +255,18 @@ Sheet.startSelectLines = function(id) {
 	$("#selectrelatedbutton-add div").css('display','none');
 	
 	Sheet.makeEditHoverable($("tbody .lineid"));
-	$(".ledgerline input:checkbox:checked").remove();
+	$(".ledgerline input:checkbox:checked").parent.parent().trigger('click');
 	$(".ledgerline").css({'cursor':'auto','-webkit-user-select':'text','-moz-user-select':'text','background-color':'#FFFFFF'}).unbind();
       });
     /*Activate the done link*/
-    
+    $("#donelink").bind('click', function() {
+	//write the values of the checked boxes to the hidden input, and then trigger #cancellink click
+	var idvalues = $.map($(".ledgerline input:checkbox:checked"), function(el, i) {
+	    //console.log($(el).val());
+	    return $(el).val().toString();
+	  }).join(',');
+	$("#id_related_add").val(idvalues);
+      });
 
   } else {
     //console.log(id);
