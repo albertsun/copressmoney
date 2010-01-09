@@ -10,6 +10,7 @@ Sheet = new Object();
   callback: function(data) { } determining what to do with the returned data and doing cleanup
 */
 Sheet.POSTLine = function(url, suffix, callback) {
+  console.log($("#id_related_"+suffix).val());
   //construct a post query and submit it to /api/add/line/
   $.post(url, { date: $("#id_date_"+suffix).val(),
 	title: $("#id_title_"+suffix).val(),
@@ -24,20 +25,26 @@ Sheet.POSTLine = function(url, suffix, callback) {
 	prepaid: $("#id_prepaid_"+suffix).val(),
 	acctsreceivable: $("#id_acctsreceivable_"+suffix).val(),
 	acctspayable: $("#id_acctspayable_"+suffix).val(),
+	related: $("#id_related_"+suffix).val(),
 	},
     callback,
     "html");
 }
 
+Sheet.bindCloseLink = function(formclass, callback) {
+  $("."+formclass).find(".closelink").bind("click", function() {
+      //closes the add form
+      $("."+formclass).remove();
+      if (callback) { callback(); }
+    });
+}
 
 /*
-  Handles the 'add' button 
+  Handles when the 'add line' button is clicked. Creates a form for submitting new ledger lines
  */
 Sheet.addLineClick = function() {
-  $("#addlink").unbind("click").removeClass("navlink");
-  
   $.get("/api/add/line/", function(data) {
-      
+      $("#addlink").unbind("click").removeClass("navlink");
       $(data).prependTo("#ledger");
       Sheet.bindCloseLink("addlineform", function() { $("#addlink").bind("click",Sheet.addLineClick).addClass("navlink"); });
 
@@ -53,36 +60,15 @@ Sheet.addLineClick = function() {
 	      $("#addlink").bind("click",Sheet.addLineClick).addClass("navlink");
 	      Sheet.summarize();
 	    });
-	    }); //end submitButton 'click' event handler
-    });
+	    }); //end submitButton 'click' event handler.
+      
+      //activate the select lines button
+      $("#selectrelatedbutton-add .selectrelatedlink").bind('click', function() {
+	  Sheet.startSelectLines();
+	});
+    }); //end $.get, adding line
 } //end addLineClick
 
-Sheet.bindCloseLink = function(formclass, callback) {
-  $("."+formclass).find(".closelink").bind("click", function() {
-      //closes the add form
-      $("."+formclass).remove();
-
-      if (callback) { callback(); }
-    });
-}
-
-/*
-  handles edit links in each lineid box
- */
-Sheet.showEditLink = function(thislink) {
-  //smacks head. these can be done in CSS
-  //$(thislink).find(".editlink").css("visibility","visible");
-  //$(thislink).addClass("lineid-editactive");
-  $(thislink).one("click", function() {
-      /*onclick, activate the whole line for editing*/
-      Sheet.editLine($(thislink).parent());
-    });
-}
-Sheet.hideEditLink = function(thislink) {
-  //$(thislink).find(".editlink").css("visibility","hidden");
-  //$(thislink).removeClass("lineid-editactive");
-  $(thislink).unbind("click");
-}
 Sheet.editLine = function(trline) {
   /*Queries server for form data to make a line of the ledger editable.
 
@@ -114,7 +100,7 @@ Sheet.editLine = function(trline) {
       trline.hide();
       /*Add a delete button to trline*/
       var deleteLinkTd = $(".formheading.editlineform-"+id+" td:first").append($("<span><small><em>delete row</em></small></span>").addClass("navlink deletelink"));
-      console.log(deleteLinkTd);
+      //console.log(deleteLinkTd);
       $(deleteLinkTd).find(".deletelink").one("click", function() {
 	  $.get("/api/delete/line/"+id+"/", function(data) { 
 	      
@@ -124,6 +110,23 @@ Sheet.editLine = function(trline) {
     }); //end $.get of edit form line
   
   //trline.find(".date");
+}
+/*
+  handles edit links in each lineid box
+ */
+Sheet.showEditLink = function(thislink) {
+  //smacks head. these can be done in CSS
+  //$(thislink).find(".editlink").css("visibility","visible");
+  //$(thislink).addClass("lineid-editactive");
+  $(thislink).one("click", function() {
+      /*onclick, activate the whole line for editing*/
+      Sheet.editLine($(thislink).parent());
+    });
+}
+Sheet.hideEditLink = function(thislink) {
+  //$(thislink).find(".editlink").css("visibility","hidden");
+  //$(thislink).removeClass("lineid-editactive");
+  $(thislink).unbind("click");
 }
 Sheet.makeEditHoverable = function(jqobject) {
   jqobject.hover(function() {
@@ -165,7 +168,7 @@ Sheet.summarize = function(summaryrow) {
   //OR
   //.replaceWith(summaryrow);
 
-  console.log(summaryrow);
+  //console.log(summaryrow);
 }
 
 /*Formats a Number as a string in accounting notation*/
@@ -181,12 +184,98 @@ Sheet.parseAccounting = function(s) {
   return new Number(s.replace(/\$|\)/g,'').replace(/\(/,'-'));
 }
 
+
+/* Code snippet for select lines function
+
+$(".ledgerline:not(#line-476)").css({'cursor':'pointer','-webkit-user-select':'none','-moz-user-select':'none'}).bind('click', function() { console.log($(this).attr('id')) });
+$("#line-253").css('background-color','#FF8952');
+
+$(".ledgerline input:checkbox:checked")
+.attr('checked',true);
+
+*/
+Sheet.startSelectLines = function(id) {
+
+  var mouseOverLine = function() {
+    //Adds a hover effect that highlights lines
+    //it may be possible to do this with CSS instead of javascript
+    $(this).css('background-color','#FF8952');
+  }
+  var mouseOutLine = function() {
+    $(this).css('background-color','#FFFFFF');
+  }
+
+  //deactivate edit links
+  $("tbody .lineid").unbind();
+
+  if (!id) {
+    //no id passed, so we're working with .addlineform .selectrelatedbutton
+    console.log("no id provided. selecting lines for adding a new line");    
+    $(".closelink:not(.addlineform .closelink)").trigger('click');
+    
+    $("#selectrelatedbutton-add").css('background-color','#CCEFFF');
+    $("#selectrelatedbutton-add div").css('display','block');
+    $("#selectrelatedbutton-add .selectrelatedlink").css('display','none'); //inline is default
+
+    /*Setup the lines of the ledger to be selected.
+      When one is selected it gains a hidden checked checkbox <input> with its ID as the value.
+    */
+    $(".ledgerline").css({'cursor':'pointer','-webkit-user-select':'none','-moz-user-select':'none'}).hover(mouseOverLine, mouseOutLine).toggle(function() {
+	  var id_s = $(this).attr("id");
+	  var id = id_s.substr(id_s.indexOf('-')+1,id_s.length);
+
+	  console.log("select "+id_s);
+	  
+  	  //first time a line is clicked. selects it.
+	  $(this).css('background-color','#FF8952');
+	  $(this).unbind('mouseover').unbind('mouseout');
+	  
+	  //TODO store selected lines
+	  
+	  $('<input type="checkbox" name="lineselected" value="'+id+'" checked="checked" />').css('display','none').appendTo($(this).find(".lineid"));
+	},
+	function() {
+	  console.log('deselect '+$(this).attr("id"))
+	  //second time a line is clicked. deselects it.
+	  $(this).hover(mouseOverLine, mouseOutLine);
+	  $(this).css('background-color','#FFFFFF');
+	  
+	  //TODO remove line from selected. deselect it
+	  $(this).find("input:checkbox").remove();
+	  
+	});
+
+    /*Activate the cancel link*/
+    $("#cancellink").bind('click', function() {
+	//restores prior content
+	console.log('canceling selection');
+	
+	$("#selectrelatedbutton-add").css('background-color','#FFFFFF');
+	$("#selectrelatedbutton-add .selectrelatedlink").css('display','inline');
+	$("#selectrelatedbutton-add div").css('display','none');
+	
+	Sheet.makeEditHoverable($("tbody .lineid"));
+	$(".ledgerline input:checkbox:checked").remove();
+	$(".ledgerline").css({'cursor':'auto','-webkit-user-select':'text','-moz-user-select':'text','background-color':'#FFFFFF'}).unbind();
+      });
+    /*Activate the done link*/
+    
+
+  } else {
+    //console.log(id);
+    //Collapse other editing dialogs
+    console.log(".closelink:not(.editlineform-"+id+" .closelink)")
+    $(".closelink:not(.editlineform-"+id+" .closelink)").trigger('click');
+  }
+}
+
+
 $(document).ready(function() {
     /*
       Makes table sortable on each column header
       http://tablesorter.com/docs/
      */
-    $("#ledger").tablesorter({ headers: { 3: {sorter:'text'}, 6: {sorter:'currency'}, 7: {sorter:'currency'}, 8: {sorter:'currency'}, 9: {sorter:'currency'}, 10: {sorter:'currency'}, 11: {sorter:'currency'}, 12: {sorter:'currency'}, 13: {sorter:'digit'} }, 'cancelSelection':false, 'debug':true });
+    $("#ledger").tablesorter({ headers: { 3: {sorter:'text'}, 6: {sorter:'currency'}, 7: {sorter:'currency'}, 8: {sorter:'currency'}, 9: {sorter:'currency'}, 10: {sorter:'currency'}, 11: {sorter:'currency'}, 12: {sorter:'currency'}, 13: {sorter:'digit'} }, 'cancelSelection':false, 'debug':false });
     $("#ledger #summary th").unbind("click");
 
     /*

@@ -1,4 +1,4 @@
-<tr class="lineform formheading {{ tr_classes }}"><td colspan="13"><big><strong>{{ heading }}</strong></big></td><td rowspan="4"><span class="navlink closelink">close</span></td></tr>
+<tr class="lineform formheading {{ tr_classes }}"><td colspan="13"><big><strong>{{ heading }}</strong></big></td><td><span class="navlink closelink">close</span></td></tr>
 <tr class="linelabels lineform {{ tr_classes }}">
 <td><label for="id_date">Date*</label></td>
 <td><label for="id_title">Title*</label></td>
@@ -11,6 +11,7 @@
 <td class="prepaid"><label for="id_prepaid">Prepaid Expenses</label></td>
 <td class="acctsreceivable"><label for="id_acctsreceivable">A/R</label></td>
 <td class="acctspayable"><label for="id_acctspayable">A/P</label></td>
+<td class="related"><label for="id_related">Related Lines</label><input type="hidden" name="related" id="id_related_{% if form.instance.id %}{{ form.instance.id }}{% else %}add{% endif %}" value="{{ relatedvalues }}" /></td>
 </tr>
 <tr class="lineform {{ tr_classes }}">
 <td>{{ form.date }}</td>
@@ -24,11 +25,15 @@
 <td class="numeric prepaid">${{ form.prepaid }}</td>
 <td class="numeric acctsreceivable">${{ form.acctsreceivable }}</td>
 <td class="numeric acctspayable">${{ form.acctspayable }}</td>
+<td class="related selectrelatedbutton" id="selectrelatedbutton-{% if form.instance.id %}{{ form.instance.id }}{% else %}add{% endif %}" rowspan="2">
+<span class="navlink selectrelatedlink">select related lines</span>
+<div><small><a id="cancellink" class="navlink">cancel</a> | <a id="donelink" class="navlink">done</a></small></div><div id="selected-count">0 selected</div>
+</td>
 </tr>
 <tr class="lineform formbottom {{ tr_classes }}">
-<td><label for="id_client">Client</label></td>
+<td style="text-align:center;"><label for="id_client">Client</label></td>
 <td>{{ form.client }}</td>
-<td><label for="id_documentation">Link</label></td>
+<td style="text-align:center;"><label for="id_documentation">Link</label></td>
 <td colspan="3">{{ form.documentation }}</td>
 <td colspan="4"><p><input type="submit" id="{{ submitButton.id }}" value="{{ submitButton.text }}" /></p>
 </td>

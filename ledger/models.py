@@ -35,7 +35,9 @@ class LedgerLine(models.Model):
     acctsreceivable = models.DecimalField(null=True, max_digits=14, decimal_places=5, blank=True, verbose_name="A/R")
     acctspayable = models.DecimalField(null=True, max_digits=14, decimal_places=5, blank=True, verbose_name="A/P")
 
+    related = models.ManyToManyField('self', blank=True)
     #future additions
+    
     #paid or unpaid (boolean)
     #related lines (many-to-many)
 
@@ -71,7 +73,7 @@ class LedgerLine(models.Model):
             return {'id': self.id, 'title': self.title, 'left': left, 'right': right}
 
     def __unicode__(self):
-        return str(self.title)+" (Entry date"+str(self.date)+")"
+        return "("+str(self.id)+") "+str(self.title)+" [Entry date"+str(self.date)+"]"
 
     class Meta:
         ordering = ['-id']

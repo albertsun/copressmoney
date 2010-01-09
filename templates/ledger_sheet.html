@@ -4,7 +4,7 @@
 
 {% block content %}
 <div id="navbar">
-<a class="navlink" id="addlink">add line</a> ||| <a id="prevlink" class="navlink">prev</a> | <a id="nextlink" class="navlink">next</a>
+<a id="prevlink" class="navlink">prev</a> | <a id="nextlink" class="navlink">next</a> ||| <a class="navlink" id="addlink">add line</a> | <a class="navlink" id="recordsale">record sale</a> | <a class="navlink" id="recordpayment">record payment</a>
 </div>
 
 
@@ -40,8 +40,6 @@
 </tr>
 </thead>
 <tbody>
-
-<!--insert addline form here-->
 
 {% for line in line_list %}
     {% include "ledger_line.html" %}

@@ -164,7 +164,11 @@ def edit_line(request, line_id):
         classes = 'editlineform editlineform-%d' % line_id
         submitID = "editSubmitButton-%d" % line_id
         form.auto_id = 'id_%s_'+str(form.initial['id']) #Makes input id attr's more unique, when multiple forms are present.
-        return render_to_response('ledger_lineform.html', {'form': form, 'heading': head, 'submitButton': {'id': submitID, 'text': "Update Line"}, 'tr_classes': classes});
+        
+        #need to pass additional context to the template, a string with id's i.e. '477,475,474' because that part of the form is custom implemented in javascript
+        relatedvalues = ",".join([str(r.id) for r in l.related.all()])
+        
+        return render_to_response('ledger_lineform.html', {'form': form, 'relatedvalues': relatedvalues, 'heading': head, 'submitButton': {'id': submitID, 'text': "Update Line"}, 'tr_classes': classes});
     elif request.method == 'POST':
         form = LineForm(request.POST, instance=l)
         line = form.save()
@@ -201,35 +205,5 @@ def sumAccounts(queryset):
     prepaid = aggregates['prepaid__sum']
     acctsreceivable = aggregates['acctsreceivable__sum']
     acctspayable = aggregates['acctspayable__sum']
-    """
-    for l in queryset:
-        try:
-            revenue+=l.revenue
-        except TypeError:
-            pass
-        try:
-            expenses+=l.expenses
-        except TypeError:
-            pass
-        try:
-            cash+=l.cash
-        except TypeError:
-            pass
-        try:
-            unearned+=l.unearned
-        except TypeError:
-            pass
-        try:
-            prepaid+=l.prepaid
-        except TypeError:
-            pass
-        try:
-            acctsreceivable+=l.acctsreceivable
-        except TypeError:
-            pass
-        try:
-            acctspayable+=l.acctspayable
-        except TypeError:
-            pass
-    """
+
     return {'revenue': revenue, 'expenses': expenses, 'cash': cash, 'unearned': unearned, 'prepaid': prepaid, 'acctsreceivable': acctsreceivable, 'acctspayable': acctspayable}

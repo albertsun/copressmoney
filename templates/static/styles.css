@@ -1,3 +1,12 @@
+#navbar {
+	margin:10px;
+}
+.navlink {
+	color:#0000ff;
+	text-decoration: underline;
+	cursor: pointer;
+}
+
 table {
 	border: 1px solid #ccc;
 	border-collapse:collapse;
@@ -6,13 +15,14 @@ table {
 	font-size:14px;
 	font-family:"Helvetica Neue", Arial, Helvetica, sans-serif;
 }
-
 thead {
 	background-color: #247E91;
 	text-align:left;
 }
 thead #sorters {
 	cursor:pointer;
+	-webkit-user-select:none;
+	-moz-user-select:none;
 }
 th, td {
 	border: 1px solid #ccc;
@@ -98,14 +108,6 @@ tbody .acctsreceivable, .summary .acctsreceivable {
 #lineSubmitButton {
 	width:200px;
 }
-#navbar {
-	margin:10px;
-}
-.navlink {
-	color:#0000ff;
-	text-decoration: underline;
-	cursor: pointer;
-}
 tbody .lineid:hover {
 	background-color:#CCEFFF;
 	cursor:pointer;
@@ -122,4 +124,32 @@ tbody .lineid:hover .editlink {
 }
 .deletelink {
 	margin-left:20px;
+}
+
+
+/*line selection*/
+.lineform .related {
+
+}
+.lineform td.selectrelatedbutton div {
+	display:none; //just for starters
+}
+.lineform td.selectrelatedbutton {
+	text-align:center;
+	cursor:pointer;
+}
+.lineform td.selectrelatedbutton:hover {
+	background-color:#CCEFFF;
+}
+.lineform span.selectrelatedlink {
+	
+}
+#cancellink {
+
+}
+#donelink {
+
+}
+div#selected-count {
+ margin-top:10px;
 }
