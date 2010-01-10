@@ -7,13 +7,13 @@ from django.forms import ModelForm
 class Client(models.Model):
     """Identifies a Client that will have LedgerLines associated with them. A Client can be any entity with whom money changes hands, including suppliers, employees, etc. Only a bare minimum of information is kept."""
     name = models.CharField(max_length=64)
-    mail = models.EmailField()
-    site = models.URLField(verify_exists=False)
-    description = models.TextField()
+    mail = models.EmailField(blank=True)
+    site = models.URLField(verify_exists=False, blank=True)
+    description = models.TextField(blank=True)
 
     def __unicode__(self):
         #return "<a href=\"/ledger/client/"+str(self.id)+"/\">"+self.name+"</a>"
-        return self.name
+        return "("+str(self.id)+") "+self.name
 
 class LedgerLine(models.Model):
     """A single line of a double entry ledger, tracking the balances of seven accounts."""

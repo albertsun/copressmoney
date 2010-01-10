@@ -2,14 +2,20 @@ from django.views.generic import list_detail
 from django.shortcuts import get_object_or_404, render_to_response
 from django.http import Http404, HttpResponse, HttpResponseBadRequest
 from django.db.models import Sum
+from django.contrib.auth.decorators import login_required
 
 import datetime
 
 from ledger.models import *
 
 
+#todo
+#http://docs.djangoproject.com/en/dev/topics/auth/#django.contrib.auth.decorators.login_required
+
+
 """Views"""
 
+@login_required
 def ledger_all(request):
     """Returns a ledger with all entries"""
     queryset = LedgerLine.objects.all()
@@ -20,7 +26,7 @@ def ledger_all(request):
         template_name = 'ledger_sheet.html',
         template_object_name = 'line',
     )
-
+@login_required
 def ledger_current(request):
     """Returns a ledger with all entries"""
     queryset = LedgerLine.objects.filter(date__lte=datetime.datetime.now()).order_by('-date')
@@ -31,7 +37,7 @@ def ledger_current(request):
         template_name = 'ledger_sheet.html',
         template_object_name = 'line',
     )
-
+@login_required
 def ledger_client(request, client_id):
     """A view that returns a generic list_detail view of only the ledger entries associated with the client_id"""
     client = get_object_or_404(Client, id=client_id)
@@ -124,6 +130,7 @@ def ledger_constraint_failed(request):
 """
 These need to return validation errors better, and in a javascript compatible format so that they can be shown to the user.
 """
+
 def add_line(request):
     """Handles a JavaScript request by returning the HTML of a form as a response.
     URL at /api/add/line/

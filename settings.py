@@ -4,7 +4,7 @@ DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
-    # ('Your Name', 'your_email@domain.com'),
+    ('Albert Sun', 'albert@albertsun.info'),
 )
 
 MANAGERS = ADMINS
@@ -64,9 +64,10 @@ TEMPLATE_LOADERS = (
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    #'django.middleware.csrf.CsrfViewMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     #'django.contrib.messages.middleware.MessageMiddleware',
+    'copressmoney.middleware.LoginRequiredMiddleware',
 )
 
 ROOT_URLCONF = 'copressmoney.urls'
@@ -87,3 +88,15 @@ INSTALLED_APPS = (
     #'django.contrib.messages',
     'copressmoney.ledger',
 )
+
+LOGIN_URL = '/login/'
+
+LOGIN_REDIRECT_URL = '/ledger/current/'
+
+LOGIN_EXEMPT_URLS = (
+    r'^$',
+    #other URL regex patterns that are exempt from requiring user to be authenticated
+    #used in copressmoney.middleware.LoginRequiredMiddleware
+)
+
+LOGOUT_URL = '/logout/'
