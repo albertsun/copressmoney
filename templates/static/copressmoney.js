@@ -39,7 +39,8 @@ Sheet.POSTLine = function(url, suffix, callback) {
 
 Sheet.bindCloseLink = function(formclass, callback) {
   $("."+formclass).find(".closelink").bind("click", function() {
-      //closes the add form
+      //closes the addline or editline form
+      $("#cancellink").trigger('click');
       $("."+formclass).remove();
       if (callback) { callback(); }
     });
@@ -144,6 +145,7 @@ Sheet.hideEditLink = function(thislink) {
   $(thislink).unbind("click");
 }
 Sheet.makeEditHoverable = function(jqobject) {
+  jqobject.unbind();
   jqobject.hover(function() {
       Sheet.showEditLink(this);
     },
@@ -283,12 +285,14 @@ Sheet.startSelectLines = function(id) {
   /*Activate the done link*/
   $("#donelink").bind('click', function() {
       //write the values of the checked boxes to the hidden input, and then trigger #cancellink click
-      var idvalues = $.map($(".ledgerline input:checkbox:checked"), function(el, i) {
-	  return $(el).val().toString();
-	}).join(',');
-      $("#id_related_"+suffix).val(idvalues);
-      console.log('storing selected value '+idvalues);
-      $("#cancellink").triggerHandler('click');
+      if ($(this).parent().parent().css('display') == 'block') {   
+	var idvalues = $.map($(".ledgerline input:checkbox:checked"), function(el, i) {
+	    return $(el).val().toString();
+	  }).join(',');
+	$("#id_related_"+suffix).val(idvalues);
+	console.log('storing selected value '+idvalues);
+	$("#cancellink").triggerHandler('click');
+      }
     });
 
     /*Read the value of #id_related_(suffix) and sets those lines to start out selected*/
