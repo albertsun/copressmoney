@@ -174,7 +174,7 @@ def edit_line(request, line_id):
         
         #need to pass additional context to the template, a string with id's i.e. '477,475,474' because that part of the form is custom implemented in javascript
         relatedvalues = ",".join([str(r.id) for r in l.related.all()])
-        form.fields['client'].queryset.reverse()
+
         return render_to_response('ledger_lineform.html', {'form': form, 'relatedvalues': relatedvalues, 'heading': head, 'submitButton': {'id': submitID, 'text': "Update Line"}, 'tr_classes': classes});
     elif request.method == 'POST':
         form = LineForm(request.POST, instance=l)
