@@ -81,6 +81,7 @@ class LedgerLine(models.Model):
 class LineForm(ModelForm):
     """Form class for the LedgerLine model."""
     description = forms.CharField(required=False, widget=forms.widgets.Textarea(attrs={'rows':4, 'cols':50}))
+    client = forms.ModelChoiceField(queryset=Client.objects.all().order_by('-id'), required=False)
 
     class Meta:
         model = LedgerLine
