@@ -1,5 +1,6 @@
 from django.conf.urls.defaults import *
 from django.views.generic import list_detail
+from django.conf import settings
 
 from copressmoney.views import *
 from copressmoney.ledger.models import *
@@ -48,5 +49,8 @@ urlpatterns = patterns('',
     (r'^logout/$', logout),
 )
 
-
+if settings.DEBUG:
+    urlpatterns += patterns('',
+        (r'^static/(?P<path>.*)$', 'django.views.static.serve', {'document_root': '/Applications/MAMP/htdocs/copressmoney'}),
+    )
     
