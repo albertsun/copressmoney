@@ -13,7 +13,7 @@ class Client(models.Model):
 
     def __unicode__(self):
         #return "<a href=\"/ledger/client/"+str(self.id)+"/\">"+self.name+"</a>"
-        return "("+str(self.id)+") "+self.name
+        return str(self.id)+" | "+self.name
 
 class LedgerLine(models.Model):
     """A single line of a double entry ledger, tracking the balances of seven accounts."""
