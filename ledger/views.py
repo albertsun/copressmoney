@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 
 import datetime
 
-from ledger.models import *
+from copressmoney.ledger.models import *
 
 
 #todo

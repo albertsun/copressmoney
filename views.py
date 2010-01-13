@@ -6,7 +6,7 @@ from django.shortcuts import render_to_response
 from ledger.models import *
 
 def home(request):
-    s = "copressmoney - /views.py home"
+    s = "copressmoney - homepage"
     #t = get_template('index.html')
     #s = t.render(Context({'message':s}))
     #return HttpResponse(s)
