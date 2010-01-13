@@ -114,7 +114,8 @@ Sheet.editLine = function(trline) {
       //console.log(deleteLinkTd);
       $(deleteLinkTd).find(".deletelink").one("click", function() {
 	  $.get("/api/delete/line/"+id+"/", function(data) { 
-	      //TODO. close edit form.
+	      //TODO. delete line from DOM. untested.
+	      $("#line-"+id).remove();
 	      $(".formheading.editlineform-"+id+" .closelink").trigger('click');
 	    },
 	    "json");
@@ -161,7 +162,7 @@ Sheet.makeEditHoverable = function(jqobject) {
 */
 Sheet.summarize = function(summaryrow) {
   if (!summaryrow) {
-    console.log("no provided summaryrow");
+    //console.log("no provided summaryrow");
     var summaryrow = $("#live-summary");
   }
   var sumcol = function(class) {
