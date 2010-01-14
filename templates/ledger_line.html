@@ -13,4 +13,5 @@
       <td class="acctsreceivable dollars">{% if line.acctsreceivable %}${% if line.acctsreceivable < 0 %}({{ line.acctsreceivable|force_escape|slice:"1:" }}){% else %}{{ line.acctsreceivable }}{% endif %}{% endif %}</td>
       <td class="acctspayable dollars">{% if line.acctspayable %}${% if line.acctspayable < 0 %}({{ line.acctspayable|force_escape|slice:"1:" }}){% else %}{{ line.acctspayable }}{% endif %}{% endif %}</td>
       <td class="lineid">{{ line.id }}<span class="editlink"><em>edit</em></span></td>
+      <td class="related">{{ line.related.count }}</td>
     </tr>

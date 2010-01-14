@@ -10,7 +10,7 @@
 table {
 	border: 1px solid #ccc;
 	border-collapse:collapse;
-	width:110%;
+	width:115%;
 	table-layout:fixed;
 	font-size:14px;
 	font-family:"Helvetica Neue", Arial, Helvetica, sans-serif;
@@ -54,10 +54,10 @@ tbody .client {
 	overflow:hidden;
 }
 .description {
-	width:15%;
+	width:13%;
 }
 .documentation {
-	width:5%;	
+	width:3%;	
 }
 tbody .documentation {
 	white-space:nowrap;

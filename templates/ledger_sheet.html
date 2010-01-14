@@ -26,6 +26,7 @@
 <th class="acctsreceivable">A / R</th>
 <th class="acctspayable">A / P</th>
 <th class="lineid">Line ID</th>
+<th class="related"># Related</th>
 </tr>
 <tr id="prior-summary" class="summary">
 <th id="prior-summary-head" class="summary-head" colspan="6">Prior Balances</th>
@@ -36,7 +37,6 @@
 <th class="prepaid dollars">{% if priorbalance.prepaid != None %}${% if priorbalance.prepaid < 0 %}({{ priorbalance.prepaid|floatformat:2|force_escape|slice:"1:" }}){% else %}{{ priorbalance.prepaid|floatformat:2 }}{% endif %}{% endif %}</th>
 <th class="acctsreceivable dollars">{% if priorbalance.acctsreceivable != None %}${% if priorbalance.acctsreceivable < 0 %}({{ priorbalance.acctsreceivable|floatformat:2|force_escape|slice:"1:" }}){% else %}{{ priorbalance.acctsreceivable|floatformat:2 }}{% endif %}{% endif %}</th>
 <th class="acctspayable dollars">{% if priorbalance.acctspayable != None %}${% if priorbalance.acctspayable < 0 %}({{ priorbalance.acctspayable|floatformat:2|force_escape|slice:"1:" }}){% else %}{{ priorbalance.acctspayable|floatformat:2 }}{% endif %}{% endif %}</th>
-<th class="lineid"></th>
 </tr>
 </thead>
 <tbody>
