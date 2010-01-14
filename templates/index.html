@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}copressmoney{% endblock %}
+{% block title %}{{ title }} | {{ block.super }}{% endblock %}
 
 {% block content %}
 <p>{{ message }}</p>

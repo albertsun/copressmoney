@@ -15,6 +15,7 @@ client_list = {
     'queryset': Client.objects.all(),
     'template_name': 'client_list.html',
     'template_object_name': 'client',
+    'extra_context': {'title': 'Clients'}
 }
 
 urlpatterns = patterns('',

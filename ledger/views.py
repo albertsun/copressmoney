@@ -15,7 +15,7 @@ from copressmoney.ledger.models import *
 
 """Views"""
 
-@login_required
+
 def ledger_all(request):
     """Returns a ledger with all entries"""
     queryset = LedgerLine.objects.all()
@@ -25,8 +25,9 @@ def ledger_all(request):
         queryset = queryset,
         template_name = 'ledger_sheet.html',
         template_object_name = 'line',
+        extra_context = {'title': 'All Ledger Entries'},
     )
-@login_required
+
 def ledger_current(request):
     """Returns a ledger with all entries"""
     queryset = LedgerLine.objects.filter(date__lte=datetime.datetime.now()).order_by('-date')
@@ -36,8 +37,9 @@ def ledger_current(request):
         queryset = queryset,
         template_name = 'ledger_sheet.html',
         template_object_name = 'line',
+        extra_context = {'title': 'Current Ledger Entries'},
     )
-@login_required
+
 def ledger_client(request, client_id):
     """A view that returns a generic list_detail view of only the ledger entries associated with the client_id"""
     client = get_object_or_404(Client, id=client_id)
@@ -47,6 +49,7 @@ def ledger_client(request, client_id):
         queryset = queryset,
         template_name = 'ledger_sheet.html',
         template_object_name = 'line',
+        extra_context = {'title': '('+client.name+') Client Ledger Entries'},
     )
 
 def ledger_year(request, year):
@@ -58,7 +61,7 @@ def ledger_year(request, year):
         queryset = queryset,
         template_name = 'ledger_sheet.html',
         template_object_name = 'line',
-        extra_context = {'priorbalance': sumAccounts(LedgerLine.objects.filter(date__lt=datetime.date(year, 1, 1)))},
+        extra_context = {'title': '('+str(year)+') Ledger Entries', 'priorbalance': sumAccounts(LedgerLine.objects.filter(date__lt=datetime.date(year, 1, 1))), 'nav': {'prev': '/ledger/year/'+str(year-1)+'/', 'next': '/ledger/year/'+str(year+1)+'/'} },
     )
 
 def ledger_month(request, year, month):
@@ -68,13 +71,20 @@ def ledger_month(request, year, month):
     if month<1 or month>12:
         raise Http404
     
+    prev = "/ledger/year/"
+    prev += '%s/month/' % (str(year-1) if (month==1) else str(year))
+    prev += '%s/' % ('12' if (month==1) else str(month-1))
+    next = "/ledger/year/"
+    next += '%s/month/' % (str(year+1) if (month==12) else str(year))
+    next += '%s/' % ('1' if (month==12) else str(month+1))
+
     queryset = LedgerLine.objects.filter(date__year=year, date__month=month).order_by('-date')
     return list_detail.object_list(
         request,
         queryset = queryset,
         template_name = 'ledger_sheet.html',
         template_object_name = 'line',
-        extra_context = {'priorbalance': sumAccounts(LedgerLine.objects.filter(date__lt=datetime.date(year, month, 1)))},
+        extra_context = {'title': '(M'+str(month)+' '+str(year)+') Ledger Entries', 'priorbalance': sumAccounts(LedgerLine.objects.filter(date__lt=datetime.date(year, month, 1))), 'nav': {'prev': prev, 'next': next} },
     )
 
 def ledger_quarter(request, year, quarter):
@@ -95,6 +105,13 @@ def ledger_quarter(request, year, quarter):
         month = 10
     else:
         raise Http404
+
+    prev = "/ledger/year/"
+    prev += '%s/quarter/' % (str(year-1) if (quarter==1) else str(year))
+    prev += '%s/' % ('4' if (quarter==1) else str(quarter-1))
+    next = "/ledger/year/"
+    next += '%s/quarter/' % (str(year+1) if (quarter==4) else str(year))
+    next += '%s/' % ('1' if (quarter==4) else str(quarter+1))
     
     queryset =  LedgerLine.objects.filter(date__range=(start_date, end_date)).order_by('-date')
     return list_detail.object_list(
@@ -102,7 +119,7 @@ def ledger_quarter(request, year, quarter):
         queryset = queryset,
         template_name = 'ledger_sheet.html',
         template_object_name = 'line',
-        extra_context = {'priorbalance': sumAccounts(LedgerLine.objects.filter(date__lt=datetime.date(year, month, 1)))},
+        extra_context = {'title': '(Q'+str(quarter)+' '+str(year)+') Ledger Entries', 'priorbalance': sumAccounts(LedgerLine.objects.filter(date__lt=datetime.date(year, month, 1))), 'nav': {'prev': prev, 'next': next} },
     )
 
 def ledger_constraint_failed(request):
@@ -124,6 +141,7 @@ def ledger_constraint_failed(request):
         queryset = bad,
         template_name = 'ledger_sheet.html',
         template_object_name = 'line',
+        extra_context = {'title': 'Entries Failing Accounting Constraint'},
     )
 
 

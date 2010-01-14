@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 
-{% block title %}client_list{% endblock %}
+{% block title %}{{ title }} | {{ block.super }}{% endblock %}
 
 {% block content %}
 <ul>
 {% for client in client_list %}
-    <li><a href="/ledger/client/{{ client.id }}/"><strong>{{ client.name }}</strong></a><br />{{ client.mail }}</li>
+    <li><a href="/ledger/client/{{ client.id }}/"><strong>{{ client.name }}</strong></a><br /><small>{{ client.site|urlize }}</small></li>
 {% endfor %}
 </ul>
 {% endblock %}

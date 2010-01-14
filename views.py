@@ -10,7 +10,7 @@ def home(request):
     #t = get_template('index.html')
     #s = t.render(Context({'message':s}))
     #return HttpResponse(s)
-    return render_to_response('index.html', {'message':s})
+    return render_to_response('index.html', {'message':s, 'title':'Dashboard'})
     #return render_to_response('index.html', locals())
 
 def display_meta(request):
@@ -41,7 +41,7 @@ def importHack(request):
             l.expenses=ls[8]
         if ls[9]!='':
             l.cash=ls[9]
-        if ls[10]!='':
+       if ls[10]!='':
             l.unearned=ls[10]
         if ls[11]!='':
             l.prepaid=ls[11]
