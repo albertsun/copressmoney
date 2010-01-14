@@ -13,6 +13,9 @@ def home(request):
     return render_to_response('index.html', {'message':s, 'title':'Dashboard'})
     #return render_to_response('index.html', locals())
 
+def view_debug(request):
+    return render_to_response('index.html', {'message': 'Debug page', 'title':'Debug page'})
+
 def display_meta(request):
     values = request.META.items()
     values.sort()
