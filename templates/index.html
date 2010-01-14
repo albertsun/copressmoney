@@ -4,4 +4,18 @@
 
 {% block content %}
 <p>{{ message }}</p>
+
+<div id="dashboard">
+<ul>
+<li><a href="/admin/">admin</a></li>
+<li><a href="/ledger/all/">ledger all</a></li>
+<li><a href="/ledger/current/">ledger current</a></li>
+<li><a href="/clients/">clients</a></li>
+<li>years: <a href="/ledger/year/2008/">2008</a> | <a href="/ledger/year/2009/">2009</a> | <a href="/ledger/year/2010/">2010</a></li>
+<li>quarters (append /quarter/#/ after the year, i.e. /ledger/year/2009/quarter/4/)</li>
+<li>months (append /month/#/ after the year, i.e. /ledger/year/2010/month/1/)</li>
+</ul>
+
+<a href="/logout/">logout {{ user.username }}</a>
+</div>
 {% endblock %}
