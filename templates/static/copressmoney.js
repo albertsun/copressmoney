@@ -182,11 +182,7 @@ Sheet.summarize = function(summaryrow) {
   summaryrow.find(".acctsreceivable").text(Sheet.toAccounting(sumcol("acctsreceivable")));
   summaryrow.find(".acctspayable").text(Sheet.toAccounting(sumcol("acctspayable")));
   
-  //$("tr#prior-summary").after(summaryrow);
-  //OR
-  //.replaceWith(summaryrow);
-
-  //console.log(summaryrow);
+  $("#numlines").text($(".ledgerline").length.toString()+" total lines");
 }
 
 /*Formats a Number as a string in accounting notation*/
