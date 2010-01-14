@@ -94,7 +94,7 @@ LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/ledger/current/'
 
 LOGIN_EXEMPT_URLS = (
-    r'^$',
+    
     #other URL regex patterns that are exempt from requiring user to be authenticated
     #used in copressmoney.middleware.LoginRequiredMiddleware
 )
