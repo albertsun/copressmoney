@@ -2,19 +2,16 @@ from django.views.generic import list_detail
 from django.shortcuts import get_object_or_404, render_to_response
 from django.http import Http404, HttpResponse, HttpResponseBadRequest
 from django.db.models import Sum
-from django.contrib.auth.decorators import login_required
+#from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_protect
+from django.template import RequestContext
 
 import datetime
 
 from copressmoney.ledger.models import *
-
-
-#todo
-#http://docs.djangoproject.com/en/dev/topics/auth/#django.contrib.auth.decorators.login_required
-
+from copressmoney.ledger.forms import *
 
 """Views"""
-
 
 def ledger_all(request):
     """Returns a ledger with all entries"""
@@ -226,6 +223,24 @@ def get_line(request, line_id):
     except LedgerLine.DoesNotExist:
         raise Http404
 
+def add_sale(request):
+    """Returns a form for entering a new sale into the ledger.
+    URL at /api/add/sale/
+    GET: return's a custom form
+    POST: processes the sale and creates all the ledger lines associated with it and relates them
+    """
+    if request.method == 'GET':
+        form = SaleForm()
+        form.auto_id = 'id_%s_addsale' #May not be necessary.
+        return render_to_response('saleform.html', {'form': form, 'heading': "Record New Sale", 'submitButton': {'id': "addsaleSubmitButton", 'text': "Record Sale"}, 'div_classes': "addsaleform"}, context_instance=RequestContext(request))
+    elif request.method == 'POST':
+        form = SaleForm(request.POST)
+        if form.is_valid():
+            lines = form.save()
+            #form should return a JSON representation of the new lines that have to be added, OR of errors
+            return HttpResponse(str(lines))
+    else:
+        raise Http404
 
 """Helper Functions"""
 

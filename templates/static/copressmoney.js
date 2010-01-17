@@ -78,6 +78,13 @@ Sheet.addLineClick = function() {
     }); //end $.get, adding line
 } //end addLineClick
 
+/*Handles when the record sale button is clicked*/
+Sheet.recordSaleClick = function() {
+  $.get("/api/add/sale/", function(data) {
+      $(data).before($("#ledger"))
+    });
+}
+
 Sheet.editLine = function(trline) {
   /*Queries server for form data to make a line of the ledger editable.
 
@@ -324,10 +331,14 @@ $(document).ready(function() {
     $("#ledger #summary th").unbind("click");
 
     /*
-      Adds link to add new lines
+      Activates link to add new lines
     */
     $("#addlink").bind("click", Sheet.addLineClick);
-
+    /*
+      Activates link to add new sale
+     */
+    $("#recordsale").bind("click", Sheet.recordSaleClick);
+    
     /*
       Adds links to each line to edit it.
       On mouse over each lineid table cell, the table cell is activated with an event binding so that when clicked, a GET request is made to the server for the form to edit that particular line of the ledger.

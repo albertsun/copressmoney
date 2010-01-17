@@ -1,6 +1,4 @@
 from django.db import models
-from django import forms
-from django.forms import ModelForm
 
 # Fundamental model is for a single line of the ledger. Additional model defines a basic client. Optional foreign key associates ledger line to client.
 
@@ -78,11 +76,4 @@ class LedgerLine(models.Model):
     class Meta:
         ordering = ['-id']
 
-class LineForm(ModelForm):
-    """Form class for the LedgerLine model."""
-    description = forms.CharField(required=False, widget=forms.widgets.Textarea(attrs={'rows':4, 'cols':50}))
-    client = forms.ModelChoiceField(queryset=Client.objects.all().order_by('-id'), required=False)
-
-    class Meta:
-        model = LedgerLine
 

@@ -36,6 +36,8 @@ urlpatterns = patterns('',
     (r'^api/delete/line/(\d+)/$', delete_line),
     (r'^api/get/line/(\d+)/$', get_line),
 
+    (r'^api/add/sale/$', add_sale),
+
     (r'^display_meta/$', display_meta),
 
     #(r'^ledger/import/$', importHack),

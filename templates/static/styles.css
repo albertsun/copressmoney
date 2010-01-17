@@ -125,6 +125,9 @@ tbody .lineid:hover .editlink {
 .deletelink {
 	margin-left:20px;
 }
+.required {
+	color:#FF0000;
+}
 
 
 /*line selection*/
@@ -144,10 +147,16 @@ tbody .lineid:hover .editlink {
 .lineform span.selectrelatedlink {
 	
 }
+.addsaleform p {
+	display:inline;
+}
 #cancellink {
 
 }
 #donelink {
+
+}
+#newclientlink {
 
 }
 div#selected-count {

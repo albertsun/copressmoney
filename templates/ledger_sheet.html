@@ -4,7 +4,7 @@
 
 {% block content %}
 <div id="navbar">
-<a {% if nav.prev %}href="{{ nav.prev }}"{% endif %}>prev</a> | <a {% if nav.next %}href="{{ nav.next }}"{% endif %}>next</a> ||| <a class="navlink" id="addlink">add line</a> | <a id="recordsale">record sale</a> | <a id="recordpayment">record payment</a> ||| <span id="numlines">total lines</span> <span>// welcome {{ user.username }}</span> | <a href="/">home</a>
+<a {% if nav.prev %}href="{{ nav.prev }}"{% endif %}>prev</a> | <a {% if nav.next %}href="{{ nav.next }}"{% endif %}>next</a> ||| <a class="navlink" id="addlink">add line</a> | <a class="navlink" id="recordsale">record sale</a> | <a id="recordpayment">record payment</a> ||| <span id="numlines">total lines</span> <span>// welcome {{ user.username }}</span> | <a href="/">home</a>
 </div>
 
 
