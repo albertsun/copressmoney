@@ -66,6 +66,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
     #'django.contrib.messages.middleware.MessageMiddleware',
     'copressmoney.middleware.LoginRequiredMiddleware',
 )
@@ -84,7 +85,8 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
-    #'django.contrib.sites',
+    'django.contrib.sites',
+    'django.contrib.flatpages',
     #'django.contrib.messages',
     'copressmoney.ledger',
 )

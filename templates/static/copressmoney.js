@@ -86,7 +86,7 @@ Sheet.recordSaleClick = function() {
       $("#recordsale").unbind("click").removeClass("navlink");
       
       //bind close link
-      Sheet.bindCloseLink("addsaleform", function() { $("#recordsale").bind("click",Sheet.addLineClick).addClass("navlink"); });
+      Sheet.bindCloseLink("addsaleform", function() { $("#recordsale").bind("click",Sheet.recordSaleClick).addClass("navlink"); });
       
       //ajaxify form submission
       $("#addsaleform").submit(function() {
