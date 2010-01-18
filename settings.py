@@ -1,6 +1,6 @@
 # Django settings for copressmoney project.
 
-DEBUG = True
+DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
@@ -12,7 +12,7 @@ MANAGERS = ADMINS
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': '/Users/albert/stuff/CoPress/copressmoney/copressmoney/db.sqlite',                      # Or path to database file if using sqlite3.
+        'NAME': '/home/copress/webapps/copressmoney/copressmoney/db.sqlite',                      # Or path to database file if using sqlite3.
         'USER': '',                      # Not used with sqlite3.
         'PASSWORD': '',                  # Not used with sqlite3.
         'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
@@ -39,17 +39,17 @@ USE_I18N = False
 
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
-MEDIA_ROOT = ''
+MEDIA_ROOT = '/home/copress/webapps/copressmoney_static/media/'
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash if there is a path component (optional in other cases).
 # Examples: "http://media.lawrence.com", "http://example.com/media/"
-MEDIA_URL = ''
+MEDIA_URL = 'http://money.copressinc.org/static/media/'
 
 # URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
 # trailing slash.
 # Examples: "http://foo.com/media/", "/media/".
-ADMIN_MEDIA_PREFIX = '/media/'
+ADMIN_MEDIA_PREFIX = '/static/adminmedia/'
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = '$0*-dd@qm_n@!s+3-@_o^u4uveztqs04fa$1w9=ys&512kjv65'
@@ -102,3 +102,8 @@ LOGIN_EXEMPT_URLS = (
 )
 
 LOGOUT_URL = '/logout/'
+
+try:
+    from settings_local import *
+except:
+    pass
