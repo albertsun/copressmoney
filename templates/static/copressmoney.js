@@ -110,11 +110,12 @@ Sheet.recordSaleClick = function() {
 		      newLine.prependTo("#ledger tbody");
 		    });
 		});
-	      console.log(data);
-	      
+	      console.log(data);	      
 	      $("#addsaleblock").remove();
 	      //$("#addsaleblock").replaceWith($("<div></div>").text(String(data)));
 	      
+	      $("#recordsale").bind("click", Sheet.recordSaleClick);
+
 	      Sheet.summarize();
 	    }, "json");
 	  return false;
