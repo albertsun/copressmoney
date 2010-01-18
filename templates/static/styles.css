@@ -147,8 +147,8 @@ tbody .lineid:hover .editlink {
 .lineform span.selectrelatedlink {
 	
 }
-.addsaleform p {
-	display:inline;
+.addsaleform label {
+	display:block;
 }
 #cancellink {
 

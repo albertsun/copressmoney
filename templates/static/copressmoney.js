@@ -81,7 +81,44 @@ Sheet.addLineClick = function() {
 /*Handles when the record sale button is clicked*/
 Sheet.recordSaleClick = function() {
   $.get("/api/add/sale/", function(data) {
-      $(data).before($("#ledger"))
+      $(data).insertBefore($("#ledger"));
+      //unbind record sale
+      $("#recordsale").unbind("click").removeClass("navlink");
+      
+      //bind close link
+      Sheet.bindCloseLink("addsaleform", function() { $("#recordsale").bind("click",Sheet.addLineClick).addClass("navlink"); });
+      
+      //ajaxify form submission
+      $("#addsaleform").submit(function() {
+	  $.post("/api/add/sale/", { csrfmiddlewaretoken: $("#addsaleform div:first input:hidden").val(),
+		date: $("#id_date_addsale").val(),
+		client: $("#id_client_addsale").val(),
+		title: $("#id_title_addsale").val(),
+		invoice_description: $("#id_invoice_description_addsale").val(),
+		invoice_category: $("#id_invoice_category_addsale").val(),
+		documentation: $("#id_documentation_addsale").val(),
+		upfront_price: $("#id_upfront_price_addsale").val(),
+		hosting_start_date: $("#id_hosting_start_date_addsale").val(),
+		num_months: $("#id_num_months_addsale").val(),
+		monthly_price: $("#id_monthly_price_addsale").val(),
+	    },
+	    function (data) {
+	      $.map(data, function(el, i) {
+		  $.get("/api/get/line/"+String(el)+"/", function(data) {
+		      console.log(String(el));
+		      var newLine = $(data);
+		      newLine.prependTo("#ledger tbody");
+		    });
+		});
+	      console.log(data);
+	      
+	      $("#addsaleblock").remove();
+	      //$("#addsaleblock").replaceWith($("<div></div>").text(String(data)));
+	      
+	      Sheet.summarize();
+	    }, "json");
+	  return false;
+	});
     });
 }
 
@@ -121,7 +158,7 @@ Sheet.editLine = function(trline) {
       //console.log(deleteLinkTd);
       $(deleteLinkTd).find(".deletelink").one("click", function() {
 	  $.get("/api/delete/line/"+id+"/", function(data) { 
-	      //TODO. delete line from DOM. untested.
+	      
 	      $("#line-"+id).remove();
 	      $(".formheading.editlineform-"+id+" .closelink").trigger('click');
 	    },

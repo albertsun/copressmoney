@@ -5,6 +5,7 @@ from django.db.models import Sum
 #from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_protect
 from django.template import RequestContext
+from django.utils import simplejson
 
 import datetime
 
@@ -238,8 +239,7 @@ def add_sale(request):
         if form.is_valid():
             lines = form.save()
             #form should return a JSON representation of the new lines that have to be added, OR of errors
-            return HttpResponse(str(lines))
-    else:
+            return HttpResponse(simplejson.dumps(lines))
         raise Http404
 
 """Helper Functions"""

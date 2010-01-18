@@ -1,33 +1,9 @@
-<div class="lineform formheading {{ div_classes }}"><p><big><strong>{{ heading }}</strong></big> <span class="navlink closelink">close</span></p></div>
-<div class="lineform formheading {{ div_classes }}">
-<form action="/api/add/sale/" method="post">{% csrf_token %}
+<div id="addsaleblock">
+<div class="formheading {{ div_classes }}"><p><big><strong>{{ heading }}</strong></big> <span class="navlink closelink">close</span></p></div>
+<div class=" {{ div_classes }}">
+<form action="/api/add/sale/" id="addsaleform" method="post">{% csrf_token %}
 {{ form.as_p }}
 <input type="submit" value="{{ submitButton.text }}" />
 </form>
 </div>
-
-<!--<div class="lineform formheading {{ div_classes }}"><p><big><strong>{{ heading }}</strong></big> <span class="navlink closelink">close</span></p></div>
-
-<div class="linelabels lineform {{ div_classes }}">
-<p><label for="id_date">Date<span class="required">*</span></label></p>
-<p><label for="id_title">Invoice Title<span class="required">*</span></label></p>
-<p colspan="3"><label for="id_description">Description</label></p>
-<p><label for="id_category">Sale Category<span class="required">*</span></label></p>
 </div>
-
-<div class="lineform {{ div_classes }}">
-<p>{{ form.date }}</p>
-<p>{{ form.title }}</p>
-<p colspan="3" rowspan="2">{{ form.invoice_description }}</p>
-<p>{{ form.invoice_category }}</p>
-</div>
-
-<div class="lineform formbottom {{ div_classes }}">
-<p style="text-align:center;"><label for="id_client">Client</label></p>
-<p>{{ form.client }}</p>
-<p><a class="navlink newclientlink">new client</a></p>
-<p style="text-align:center;"><label for="id_documentation">Link</label></p>
-<p colspan="3">{{ form.documentation }}</p>
-<p colspan="4"><p><input type="submit" id="{{ submitButton.id }}" value="{{ submitButton.text }}" /></p>
-</p>
-</div>-->
