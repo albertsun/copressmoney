@@ -240,7 +240,8 @@ def add_sale(request):
             lines = form.save()
             #form should return a JSON representation of the new lines that have to be added, OR of errors
             return HttpResponse(simplejson.dumps(lines))
-        raise Http404
+        else:
+            raise Http404
     else:
         raise Http404
 
