@@ -359,6 +359,45 @@ Sheet.startSelectLines = function(id) {
 
 } //end Sheet.startSelectLines();
 
+Sheet.validateLineform = function() {
+    //snippet for triggering validation. In progress
+    $(".lineform input").die();
+    $(".lineform input").live("keyup", function(event) {
+	var classes = $(event.originalTarget).parent().parent().attr('class');
+	var id_s = classes.split('-')[1];
+	classes = "."+classes.split(' ').join('.');
+
+
+	/*
+	Test validation conditions
+	 */
+	var valid = true;
+	if (!($(classes).find("#id_date_"+id_s).val().match(/^\d{4}-\d{1,2}-\d{1,2}$/))) { $("#id_date_"+id_s).css({"background-color":"#FF0000"}); valid = false; } else {
+	  $("#id_date_"+id_s).css({"background-color":"#FFFFFF"});
+	}
+	if ($(classes).find("#id_title_"+id_s).val() == '') { $("#id_title_"+id_s).css({"background-color":"#FF0000"}); valid = false; } else {
+	  $("#id_title_"+id_s).css({"background-color":"#FFFFFF"});
+	}
+	if ($(classes).find("#id_category_"+id_s).val() == '') { $("#id_category_"+id_s).css({"background-color":"#FF0000"}); valid = false; } else {
+	  $("#id_category_"+id_s).css({"background-color":"#FFFFFF"});
+	}
+	
+	if ((Number($("#id_revenue_"+id_s).val())+Number($("#id_unearned_"+id_s).val())+Number($("#id_acctspayable_"+id_s).val())-Number($("#id_expenses_"+id_s).val())-Number($("#id_acctsreceivable_"+id_s).val())-Number($("#id_cash_"+id_s).val())-Number($("#id_prepaid_"+id_s).val())).toFixed(2) != 0) {
+	  $(".numeric input").css({"background-color":"#FF0000"});
+	  valid = false;
+	} else {
+	  $(".numeric input").css({"background-color":"#FFFFFF"});
+	}
+
+	if (valid) {
+	  $(".formheading."+classes.split(' ').join('.')).css({'background-color':'#00FF00'});
+	} else {
+	  $(".formheading."+classes.split(' ').join('.')).css({'background-color':'#FF0000'});
+	}
+
+      });
+    //*/
+}
 
 $(document).ready(function() {
     /*
@@ -387,5 +426,7 @@ $(document).ready(function() {
     
     Sheet.summarize($("tr#prior-summary").clone().attr('id','live-summary').find("th:first").attr('id','live-summary-head').text("Summary of Changes").parent().insertAfter("tr#prior-summary"));
 
-  });
+    Sheet.validateLineform();
+
+}); //end document.ready
 
