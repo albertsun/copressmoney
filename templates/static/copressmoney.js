@@ -210,10 +210,10 @@ Sheet.summarize = function(summaryrow) {
     //console.log("no provided summaryrow");
     var summaryrow = $("#live-summary");
   }
-  var sumcol = function(class) {
+  var sumcol = function(class_string) {
     /*Takes a String that's a class name of a table column and sums its values*/
     var tot = new Number(0.0);
-    $("tbody td.dollars."+class).each(function(i,node) {
+    $("tbody td.dollars."+class_string).each(function(i,node) {
       tot += new Number(Sheet.parseAccounting($(node).text()));
     });
     return tot;
