@@ -55,7 +55,7 @@ urlpatterns = patterns('',
 
 if settings.DEBUG:
     urlpatterns += patterns('',
-        (r'^static/(?P<path>.*)$', 'django.views.static.serve', {'document_root': '/Applications/MAMP/htdocs/copressmoney'}),
+        (r'^static/(?P<path>.*)$', 'django.views.static.serve', {'document_root': '/Users/albert/Desktop/copressmoney/templates/static'}),
         (r'^debug/$', view_debug),
     )
     
