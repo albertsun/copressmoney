@@ -1,5 +1,6 @@
-copressmoney - basic spreadsheet app, originally developed for CoPress to keep track of accounts 
+copressmoney - basic spreadsheet app, originally developed for CoPress (a small web host company) to keep track of accounts 
+
+We used Google Docs to keep track of accounts, but this streamlines the entry process for sales, and let us better manage accounts receivable, and credit unearned revenue from sales to future months
 
 To set up, just run:
-
 ./manage.py syncdb
