@@ -1,0 +1,5 @@
+copressmoney - basic spreadsheet app, originally developed for CoPress to keep track of accounts 
+
+To set up, just run:
+
+./manage.py syncdb
